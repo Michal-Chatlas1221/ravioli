@@ -11,14 +11,14 @@
 //
 // If you no longer want to use a dependency, remember
 // to also remove its path from "config.paths.watched".
-import "phoenix_html"
+import "phoenix_html";
 
 // Import local files
 //
 // Local files can be imported directly using relative
 // paths "./socket" or full ones "web/static/js/socket".
 
-import socket from "./socket"
+import socket from "./socket";
 
 console.group();
 console.log('Hi, monte carlo pi');
@@ -35,6 +35,11 @@ for (var i = 0; i < round; i++) {
 }
 
 console.log(hit);
-console.endGroup();
+console.groupEnd();
 
-socket.push('result', {try: round, hit: hit}).then(console.log('OK')).catch(console.log('DUPA'));
+let channel = socket.channel("pi:monte", {});
+channel.join()
+  .receive("ok", resp => { console.log("Joined successfully", resp); })
+  .receive("error", resp => { console.log("Unable to join", resp); });
+
+channel.push('result', {round: round, hit: hit});
