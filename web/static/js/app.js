@@ -18,4 +18,23 @@ import "phoenix_html"
 // Local files can be imported directly using relative
 // paths "./socket" or full ones "web/static/js/socket".
 
-// import socket from "./socket"
+import socket from "./socket"
+
+console.group();
+console.log('Hi, monte carlo pi');
+
+const round = 1000;
+let hit = 0;
+let x, y;
+
+for (var i = 0; i < round; i++) {
+	x = Math.random();
+	y = Math.random();
+
+	if ((x*x + y*y)<1) hit++;
+}
+
+console.log(hit);
+console.endGroup();
+
+socket.push('result', {try: round, hit: hit}).then(console.log('OK')).catch(console.log('DUPA'));
