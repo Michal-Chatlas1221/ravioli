@@ -12,6 +12,7 @@ defmodule Ravioli do
       supervisor(Ravioli.Repo, []),
       # Start the endpoint when the application starts
       supervisor(Ravioli.Endpoint, []),
+      worker(Ravioli.ResultsServer, [])
       # Start your own worker by calling: Ravioli.Worker.start_link(arg1, arg2, arg3)
       # worker(Ravioli.Worker, [arg1, arg2, arg3]),
     ]
