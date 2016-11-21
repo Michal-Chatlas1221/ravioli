@@ -16,7 +16,7 @@ defmodule Ravioli.Web do
   below.
   """
 
-  def model do
+  def schema do
     quote do
       use Ecto.Schema
 
@@ -30,7 +30,6 @@ defmodule Ravioli.Web do
     quote do
       use Phoenix.Controller
 
-      alias Ravioli.Repo
       import Ecto
       import Ecto.Query
 
