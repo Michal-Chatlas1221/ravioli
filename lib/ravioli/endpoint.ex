@@ -38,5 +38,10 @@ defmodule Ravioli.Endpoint do
     key: "_ravioli_key",
     signing_salt: "ULbf0050"
 
+  plug Corsica,
+    origins: ["localhost"],
+    allow_credentials: true,
+    allow_headers: ["authorization", "accept", "content-type", "origin"]
+
   plug Ravioli.Router
 end

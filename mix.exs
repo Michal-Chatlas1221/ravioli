@@ -18,7 +18,7 @@ defmodule Ravioli.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [mod: {Ravioli, []},
-     applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :comeonin,
+     applications: [:corsica, :phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :comeonin,
                     :logger, :gettext, :phoenix_ecto, :postgrex]]
   end
 
@@ -38,7 +38,8 @@ defmodule Ravioli.Mixfile do
      {:phoenix_live_reload, "~> 1.0", only: :dev},
      {:gettext, "~> 0.11"},
      {:cowboy, "~> 1.0"},
-     {:comeonin, "~> 2.5"}
+     {:comeonin, "~> 2.5"},
+     {:corsica, "~> 0.5"}
     ]
   end
 
