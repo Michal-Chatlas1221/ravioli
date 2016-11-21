@@ -7,8 +7,9 @@ defmodule Ravioli.JobController do
   def create(conn, %{"token" => token, "job" => %{"type" => type, "input" => input} = job} = params) do
     case Repo.get_by(User, auth_token: token) do
       %User{} = user -> Ecto.build_assoc(user, :jobs, %{type: type, input: input})
-        |> Repo.insert
-        render(conn, "single_job.json", job)  
+          |> Repo.insert
+          render(conn, "single_job.json", job)
+        nil -> conn |> put_status(:unauthorized) |> render(ErrorView, "401.json")
     end                  
   end
 end
