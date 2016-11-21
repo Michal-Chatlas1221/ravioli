@@ -11,4 +11,10 @@ defmodule Ravioli.AuthController do
         conn |> put_status(:unauthorized) |> render(ErrorView, "401.json")
     end
   end
+
+  def sign_up(conn, %{"email" => email, "password" => password}) do
+    Ravioli.Auth.find_user_or_create_new(email, password)
+    sign_in(conn, %{"email" => email, "password" => password})
+  end  
+
 end

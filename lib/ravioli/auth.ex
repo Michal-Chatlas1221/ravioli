@@ -10,6 +10,13 @@ defmodule Ravioli.Auth do
     |> get_auth_token()
   end
 
+  def find_user_or_create_new(email, password) do
+    user = User.changeset(%User{}, %{"email": email, "password": password})
+    if (!Repo.get_by(User, email: email)) do
+      Repo.insert(user);
+    end  
+  end
+
   defp authenticate(%User{} = user, password) do
     if Comeonin.Bcrypt.checkpw(password, user.password) do
       {:ok, user}
