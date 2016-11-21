@@ -12,9 +12,9 @@ defmodule Ravioli.AuthController do
     end
   end
 
-  def sign_up(conn, %{"email" => email, "password" => password}) do
+  def sign_up(conn, %{"email" => email, "password" => password} = params) do
     Ravioli.Auth.find_user_or_create_new(email, password)
-    sign_in(conn, %{"email" => email, "password" => password})
+    sign_in(conn, params)
   end  
 
 end

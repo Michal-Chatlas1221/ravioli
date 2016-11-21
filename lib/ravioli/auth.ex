@@ -11,9 +11,10 @@ defmodule Ravioli.Auth do
   end
 
   def find_user_or_create_new(email, password) do
-    user = User.changeset(%User{}, %{"email": email, "password": password})
-    if (!Repo.get_by(User, email: email)) do
-      Repo.insert(user);
+    changeset = User.changeset(%User{}, %{"email" => email, "password" => password})
+    case Repo.get_by(User, email: email) do
+      %User{} = user -> user
+      nil            -> Repo.insert(changeset)
     end  
   end
 
