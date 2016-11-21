@@ -27,6 +27,6 @@ defmodule Ravioli.Router do
     post "/sign_in", AuthController, :sign_in
     post "/sign_up", AuthController, :sign_up
 
-    resources "/jobs", JobController, only: [:create]
+    resources "/jobs", JobController, only: [:create, :index]
   end
 end

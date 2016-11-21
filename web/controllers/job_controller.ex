@@ -4,12 +4,23 @@ defmodule Ravioli.JobController do
 
   alias Ravioli.ErrorView
 
-  def create(conn, %{"token" => token, "job" => %{"type" => type, "input" => input} = job} = params) do
+  def create(conn, %{"token" => token, "job" => job_params}) do
     case Repo.get_by(User, auth_token: token) do
-      %User{} = user -> Ecto.build_assoc(user, :jobs, %{type: type, input: input})
+      %User{} = user -> user
+          |> build_assoc(:jobs)
+          |> Job.changeset(job_params)
           |> Repo.insert
-          render(conn, "single_job.json", job)
+          user = Repo.preload(user, :jobs)
+          render(conn, "index.json", user)
         nil -> conn |> put_status(:unauthorized) |> render(ErrorView, "401.json")
     end                  
   end
+
+  def index(conn, %{"token" => token}) do
+    case Repo.get_by(User, auth_token: token) do
+      %User{} = user -> 
+          conn |> render("index.json", user.jobs)
+        nil -> conn |> put_status(:unauthorized) |> render(ErrorView, "401.json")
+    end
+  end  
 end
