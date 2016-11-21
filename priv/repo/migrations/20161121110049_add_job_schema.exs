@@ -11,6 +11,6 @@ defmodule Ravioli.Repo.Migrations.AddJobSchema do
       timestamps()
     end
 
-    create index(:jobs, [:owner])
+  	create index(:jobs, [:owner])
   end
 end
