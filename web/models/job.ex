@@ -5,14 +5,14 @@ defmodule Ravioli.Job do
     field :type, :string
     field :input, :string
     field :result, :string
-    belongs_to :owner, User
+    belongs_to :user, User
 
     timestamps()
   end
 
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:type, :input, :owner])
-    |> validate_required([:type, :input, :owner])
+    |> cast(params, [:type, :input, :user])
+    |> validate_required([:type, :input, :user])
   end
 end

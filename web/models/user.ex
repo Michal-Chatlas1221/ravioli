@@ -1,10 +1,12 @@
 defmodule Ravioli.User do
   use Ravioli.Web, :schema
+  alias Ravioli.Job
 
   schema "users" do
     field :email, :string
     field :password, :string
     field :auth_token, :string
+    has_many :jobs, Job
 
     timestamps()
   end

@@ -6,11 +6,11 @@ defmodule Ravioli.Repo.Migrations.AddJobSchema do
       add :type, :text
       add :input, :text
       add :result, :text
-      add :owner, references(:users, on_delete: :delete_all)
+      add :user_id, references(:users, on_delete: :delete_all)
 
       timestamps()
     end
 
-  	create index(:jobs, [:owner])
+  	create index(:jobs, [:user_id])
   end
 end
