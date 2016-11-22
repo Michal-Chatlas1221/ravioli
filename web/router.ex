@@ -34,6 +34,6 @@ defmodule Ravioli.Router do
   scope "/api", Ravioli do
     pipe_through [:api, :authenticated]
 
-    resources "/jobs", JobController, only: [:create, :index, :show]
+    resources "/jobs", JobController, only: [:create, :index, :show, :update, :delete]
   end  
 end

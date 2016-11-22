@@ -12,7 +12,7 @@ defmodule Ravioli.Job do
 
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:type, :input, :user_id])
+    |> cast(params, [:type, :input, :user_id, :result])
     |> validate_required([:type, :input, :user_id])
   end
 end
