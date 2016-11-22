@@ -5,12 +5,12 @@ defmodule Ravioli.Plugs.AuthenticateUser do
   def init(options), do: options
 
   def call(%Plug.Conn{} = conn, _options) do
-  	case Enum.join(get_req_header(conn, "x-auth-token")) do
-  		x = x -> case Repo.get_by(User, auth_token: x) do
-  		  %User{} = user -> conn |> assign(:current_user, user)
-  		  nil -> conn |> put_status(:unauthorised) |> halt
-  		end  	
-  		nil -> conn |> put_status(:unauthorised) |> halt
-  	end	
-  end
+  	with token when is_binary(token) <- Enum.join(get_req_header(conn, "x-auth-token")),
+    %User{} = user <- Repo.get_by(User, auth_token: token)
+  	  do
+  	    conn |> assign(:current_user, user)   
+   	  else 
+  	    e -> conn |> put_status(:unauthorised) |> halt
+  	end  
+  end 
 end
