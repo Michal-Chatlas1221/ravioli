@@ -4,23 +4,17 @@ defmodule Ravioli.JobController do
 
   alias Ravioli.ErrorView
 
-  def create(conn, %{"token" => token, "job" => job_params}) do
-    case Repo.get_by(User, auth_token: token) do
-      %User{} = user -> user
-          |> build_assoc(:jobs)
-          |> Job.changeset(job_params)
-          |> Repo.insert
-          user = Repo.preload(user, :jobs)
-          render(conn, "index.json", user)
-        nil -> conn |> put_status(:unauthorized) |> render(ErrorView, "401.json")
-    end                  
+  def create(conn, job_params) do
+    user = conn.assigns.current_user
+    user |> build_assoc(:jobs)
+         |> Job.changeset(job_params)
+         |> Repo.insert
+    user = Repo.preload(user, :jobs)
+    render(conn, "index.json", user)                 
   end
 
-  def index(conn, %{"token" => token}) do
-    case Repo.get_by(User, auth_token: token) do
-      %User{} = user -> 
-          conn |> render("index.json", user.jobs)
-        nil -> conn |> put_status(:unauthorized) |> render(ErrorView, "401.json")
-    end
+  def index(conn, %{}) do
+    user = conn.assigns.current_user |> Repo.preload(:jobs)
+    conn |> render("index.json", user)
   end  
 end
