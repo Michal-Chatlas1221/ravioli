@@ -1,4 +1,4 @@
-# Ravioli
+# RavioliShop
 
 To start your Phoenix app:
 

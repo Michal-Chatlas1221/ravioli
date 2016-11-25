@@ -1,10 +1,10 @@
-defmodule Ravioli.Auth do
+defmodule RavioliShop.Auth do
 
   @moduledoc """
     Let us not worry about docs right now
   """
 
-  alias Ravioli.{Repo, User}
+  alias RavioliShop.{Repo, User}
   alias Comeonin.Bcrypt
 
   @token_length 20

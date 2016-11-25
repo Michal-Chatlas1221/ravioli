@@ -1,3 +1,3 @@
-defmodule Ravioli.LayoutViewTest do
-  use Ravioli.ConnCase, async: true
+defmodule RavioliShop.LayoutViewTest do
+  use RavioliShop.ConnCase, async: true
 end

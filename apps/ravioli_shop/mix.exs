@@ -1,8 +1,8 @@
-defmodule Ravioli.Mixfile do
+defmodule RavioliShop.Mixfile do
   use Mix.Project
 
   def project do
-    [app: :ravioli,
+    [app: :ravioli_shop,
      version: "0.0.1",
      build_path: "../../_build",
      config_path: "../../config/config.exs",
@@ -21,7 +21,7 @@ defmodule Ravioli.Mixfile do
   #
   # Type `mix help compile.app` for more information.
   def application do
-    [mod: {Ravioli, []},
+    [mod: {RavioliShop, []},
      applications: [:corsica, :phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :comeonin,
                     :logger, :gettext, :phoenix_ecto, :postgrex]]
   end

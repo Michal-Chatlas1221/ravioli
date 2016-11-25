@@ -1,7 +1,7 @@
-defmodule Ravioli.UserSocket do
+defmodule RavioliShop.UserSocket do
   use Phoenix.Socket
 
-  channel "pi:*", Ravioli.PiChannel
+  channel "pi:*", RavioliShop.PiChannel
 
   transport :websocket, Phoenix.Transports.WebSocket
 

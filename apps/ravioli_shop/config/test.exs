@@ -2,7 +2,7 @@ use Mix.Config
 
 # We don't run a server during test. If one is required,
 # you can enable the server option below.
-config :ravioli, Ravioli.Endpoint,
+config :ravioli_shop, RavioliShop.Endpoint,
   http: [port: 4001],
   server: false
 
@@ -10,7 +10,7 @@ config :ravioli, Ravioli.Endpoint,
 config :logger, level: :warn
 
 # Configure your database
-config :ravioli, Ravioli.Repo,
+config :ravioli_shop, RavioliShop.Repo,
   adapter: Ecto.Adapters.Postgres,
   username: "postgres",
   password: "postgres",

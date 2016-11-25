@@ -1,7 +1,7 @@
-defmodule Ravioli.Endpoint do
+defmodule RavioliShop.Endpoint do
   use Phoenix.Endpoint, otp_app: :ravioli
 
-  socket "/socket", Ravioli.UserSocket
+  socket "/socket", RavioliShop.UserSocket
 
   # Serve at "/" the static files from "priv/static" directory.
   #
@@ -43,5 +43,5 @@ defmodule Ravioli.Endpoint do
     allow_credentials: true,
     allow_headers: ["authorization", "accept", "content-type", "origin"]
 
-  plug Ravioli.Router
+  plug RavioliShop.Router
 end

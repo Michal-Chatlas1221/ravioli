@@ -6,15 +6,15 @@
 use Mix.Config
 
 # General application configuration
-config :ravioli,
-  ecto_repos: [Ravioli.Repo]
+config :ravioli_shop,
+  ecto_repos: [RavioliShop.Repo]
 
 # Configures the endpoint
-config :ravioli, Ravioli.Endpoint,
+config :ravioli_shop, RavioliShop.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "Ek7Ox88wufQcGGey0e70z+b3Q3SlQGy4/suoYRSZ40uvQGwqBRicmWrvGEmqYeCw",
-  render_errors: [view: Ravioli.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: Ravioli.PubSub,
+  render_errors: [view: RavioliShop.ErrorView, accepts: ~w(html json)],
+  pubsub: [name: RavioliShop.PubSub,
            adapter: Phoenix.PubSub.PG2]
 
 # Configures Elixir's Logger

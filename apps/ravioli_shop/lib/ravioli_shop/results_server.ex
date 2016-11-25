@@ -1,4 +1,4 @@
-defmodule Ravioli.ResultsServer do
+defmodule RavioliShop.ResultsServer do
   @moduledoc """
     Let us not worry about docs right now
   """

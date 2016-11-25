@@ -1,4 +1,4 @@
-defmodule Ravioli.Repo.Migrations.CreateUsers do
+defmodule RavioliShop.Repo.Migrations.CreateUsers do
   use Ecto.Migration
 
   def change do

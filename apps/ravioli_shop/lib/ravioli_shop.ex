@@ -1,10 +1,10 @@
-defmodule Ravioli do
+defmodule RavioliShop do
   @moduledoc """
     Let us not worry about docs right now
   """
 
   use Application
-  alias Ravioli.Endpoint
+  alias RavioliShop.Endpoint
 
   # See http://elixir-lang.org/docs/stable/elixir/Application.html
   # for more information on OTP Applications
@@ -14,18 +14,18 @@ defmodule Ravioli do
     # Define workers and child supervisors to be supervised
     children = [
       # Start the Ecto repository
-      supervisor(Ravioli.Repo, []),
+      supervisor(RavioliShop.Repo, []),
       # Start the endpoint when the application starts
       supervisor(Endpoint, []),
-      worker(Ravioli.ResultsServer, [])
+      worker(RavioliShop.ResultsServer, [])
       # Start your own worker by calling:
-        #Ravioli.Worker.start_link(arg1, arg2, arg3)
-      # worker(Ravioli.Worker, [arg1, arg2, arg3]),
+        #RavioliShop.Worker.start_link(arg1, arg2, arg3)
+      # worker(RavioliShop.Worker, [arg1, arg2, arg3]),
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
     # for other strategies and supported options
-    opts = [strategy: :one_for_one, name: Ravioli.Supervisor]
+    opts = [strategy: :one_for_one, name: RavioliShop.Supervisor]
     Supervisor.start_link(children, opts)
   end
 

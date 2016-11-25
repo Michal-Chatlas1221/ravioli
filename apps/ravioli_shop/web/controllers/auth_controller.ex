@@ -1,7 +1,7 @@
-defmodule Ravioli.AuthController do
-  use Ravioli.Web, :controller
+defmodule RavioliShop.AuthController do
+  use RavioliShop.Web, :controller
 
-  alias Ravioli.{ErrorView, Auth}
+  alias RavioliShop.{ErrorView, Auth}
 
   def sign_in(conn, %{"email" => email, "password" => password}) do
     case Auth.get_auth_token(email, password) do

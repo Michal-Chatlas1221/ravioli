@@ -1,4 +1,4 @@
 ExUnit.start
 
-Ecto.Adapters.SQL.Sandbox.mode(Ravioli.Repo, :manual)
+Ecto.Adapters.SQL.Sandbox.mode(RavioliShop.Repo, :manual)
 

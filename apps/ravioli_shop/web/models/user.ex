@@ -1,9 +1,9 @@
-defmodule Ravioli.User do
+defmodule RavioliShop.User do
   @moduledoc """
     Let us not worry about docs right now
   """
 
-  use Ravioli.Web, :schema
+  use RavioliShop.Web, :schema
   alias Comeonin.Bcrypt
 
   schema "users" do

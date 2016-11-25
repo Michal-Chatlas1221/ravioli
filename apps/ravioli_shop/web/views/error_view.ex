@@ -1,5 +1,5 @@
-defmodule Ravioli.ErrorView do
-  use Ravioli.Web, :view
+defmodule RavioliShop.ErrorView do
+  use RavioliShop.Web, :view
 
   def render("404.html", _assigns) do
     "Page not found"

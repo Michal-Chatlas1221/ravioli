@@ -1,5 +1,5 @@
-defmodule Ravioli.PageControllerTest do
-  use Ravioli.ConnCase
+defmodule RavioliShop.PageControllerTest do
+  use RavioliShop.ConnCase
 
   test "GET /", %{conn: conn} do
     conn = get conn, "/"

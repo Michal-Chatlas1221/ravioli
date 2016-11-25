@@ -1,11 +1,11 @@
-defmodule Ravioli.PiChannel do
+defmodule RavioliShop.PiChannel do
   @moduledoc """
     Let us not worry about docs right now
   """
 
-  use Ravioli.Web, :channel
+  use RavioliShop.Web, :channel
 
-  alias Ravioli.ResultsServer
+  alias RavioliShop.ResultsServer
 
   def join("pi:monte", _msg, socket) do
     {:ok, socket}

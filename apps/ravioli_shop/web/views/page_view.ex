@@ -1,3 +1,3 @@
-defmodule Ravioli.PageView do
-  use Ravioli.Web, :view
+defmodule RavioliShop.PageView do
+  use RavioliShop.Web, :view
 end

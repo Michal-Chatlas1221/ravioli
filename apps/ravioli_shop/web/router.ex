@@ -1,5 +1,5 @@
-defmodule Ravioli.Router do
-  use Ravioli.Web, :router
+defmodule RavioliShop.Router do
+  use RavioliShop.Web, :router
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -13,7 +13,7 @@ defmodule Ravioli.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/", Ravioli do
+  scope "/", RavioliShop do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :index
@@ -21,7 +21,7 @@ defmodule Ravioli.Router do
   end
 
   # Other scopes may use custom stacks.
-  scope "/api", Ravioli do
+  scope "/api", RavioliShop do
     pipe_through :api
 
     post "/sign_in", AuthController, :sign_in

@@ -1,12 +1,12 @@
-defmodule Ravioli.Web do
+defmodule RavioliShop.Web do
   @moduledoc """
   A module that keeps using definitions for controllers,
   views and so on.
 
   This can be used in your application as:
 
-      use Ravioli.Web, :controller
-      use Ravioli.Web, :view
+      use RavioliShop.Web, :controller
+      use RavioliShop.Web, :view
 
   The definitions below will be executed for every view,
   controller, etc, so keep them short and clean, focused
@@ -33,8 +33,8 @@ defmodule Ravioli.Web do
       import Ecto
       import Ecto.Query
 
-      import Ravioli.Router.Helpers
-      import Ravioli.Gettext
+      import RavioliShop.Router.Helpers
+      import RavioliShop.Gettext
     end
   end
 
@@ -52,9 +52,9 @@ defmodule Ravioli.Web do
       # Use all HTML functionality (forms, tags, etc)
       use Phoenix.HTML
 
-      import Ravioli.Router.Helpers
-      import Ravioli.ErrorHelpers
-      import Ravioli.Gettext
+      import RavioliShop.Router.Helpers
+      import RavioliShop.ErrorHelpers
+      import RavioliShop.Gettext
     end
   end
 
@@ -68,10 +68,10 @@ defmodule Ravioli.Web do
     quote do
       use Phoenix.Channel
 
-      alias Ravioli.Repo
+      alias RavioliShop.Repo
       import Ecto
       import Ecto.Query
-      import Ravioli.Gettext
+      import RavioliShop.Gettext
     end
   end
 
