@@ -1,3 +1,3 @@
 defmodule RavioliShop.Repo do
-  use Ecto.Repo, otp_app: :ravioli
+  use Ecto.Repo, otp_app: :ravioli_shop
 end
