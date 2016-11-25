@@ -39,7 +39,7 @@ defmodule Ravioli.Endpoint do
     signing_salt: "ULbf0050"
 
   plug Corsica,
-    origins: ["localhost"],
+    origins: ["http://localhost:4444"],
     allow_credentials: true,
     allow_headers: ["authorization", "accept", "content-type", "origin"]
 
