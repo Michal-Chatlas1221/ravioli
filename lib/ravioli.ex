@@ -16,7 +16,7 @@ defmodule Ravioli do
       # Start the Ecto repository
       supervisor(Ravioli.Repo, []),
       # Start the endpoint when the application starts
-      supervisor(Ravioli.Endpoint, []),
+      supervisor(Endpoint, []),
       worker(Ravioli.ResultsServer, [])
       # Start your own worker by calling:
         #Ravioli.Worker.start_link(arg1, arg2, arg3)
