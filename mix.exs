@@ -39,7 +39,8 @@ defmodule Ravioli.Mixfile do
      {:gettext, "~> 0.11"},
      {:cowboy, "~> 1.0"},
      {:comeonin, "~> 2.5"},
-     {:corsica, "~> 0.5"}
+     {:corsica, "~> 0.5"},
+     {:credo, "~> 0.5", only: [:dev, :test]}
     ]
   end
 
