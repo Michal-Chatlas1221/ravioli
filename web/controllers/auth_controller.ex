@@ -1,10 +1,10 @@
 defmodule Ravioli.AuthController do
   use Ravioli.Web, :controller
 
-  alias Ravioli.ErrorView
+  alias Ravioli.{ErrorView, Auth}
 
   def sign_in(conn, %{"email" => email, "password" => password}) do
-    case Ravioli.Auth.get_auth_token(email, password) do
+    case Auth.get_auth_token(email, password) do
       {:ok, token} ->
         render(conn, "sign_in.json", token: token)
       {:error, _} ->
@@ -13,8 +13,7 @@ defmodule Ravioli.AuthController do
   end
 
   def sign_up(conn, %{"email" => email, "password" => password} = params) do
-    Ravioli.Auth.find_user_or_create_new(email, password)
+    Auth.find_user_or_create_new(email, password)
     sign_in(conn, params)
-  end  
-
+  end
 end

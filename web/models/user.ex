@@ -1,5 +1,10 @@
 defmodule Ravioli.User do
+  @moduledoc """
+    Let us not worry about docs right now
+  """
+
   use Ravioli.Web, :schema
+  alias Comeonin.Bcrypt
 
   schema "users" do
     field :email, :string
@@ -22,7 +27,7 @@ defmodule Ravioli.User do
   end
 
   defp encrypt_password(changeset) do
-    hashed_password = Comeonin.Bcrypt.hashpwsalt(changeset.changes.password)
+    hashed_password = Bcrypt.hashpwsalt(changeset.changes.password)
     put_change(changeset, :password, hashed_password)
   end
 end

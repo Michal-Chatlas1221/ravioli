@@ -1,4 +1,8 @@
 defmodule Ravioli.ResultsServer do
+  @moduledoc """
+    Let us not worry about docs right now
+  """
+
   use GenServer
 
   @name :results_server

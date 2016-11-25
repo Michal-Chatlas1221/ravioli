@@ -1,5 +1,11 @@
 defmodule Ravioli.Auth do
+
+  @moduledoc """
+    Let us not worry about docs right now
+  """
+
   alias Ravioli.{Repo, User}
+  alias Comeonin.Bcrypt
 
   @token_length 20
 
@@ -11,15 +17,17 @@ defmodule Ravioli.Auth do
   end
 
   def find_user_or_create_new(email, password) do
-    changeset = User.changeset(%User{}, %{"email" => email, "password" => password})
+    changeset = User.changeset(
+      %User{}, %{"email" => email, "password" => password}
+      )
     case Repo.get_by(User, email: email) do
       %User{} = user -> user
       nil            -> Repo.insert(changeset)
-    end  
+    end
   end
 
   defp authenticate(%User{} = user, password) do
-    if Comeonin.Bcrypt.checkpw(password, user.password) do
+    if Bcrypt.checkpw(password, user.password) do
       {:ok, user}
     else
       {:error, :unauthorized}
@@ -40,7 +48,8 @@ defmodule Ravioli.Auth do
   defp get_auth_token({:ok, %User{auth_token: token}}), do: {:ok, token}
 
   defp generate_token() do
-    :crypto.strong_rand_bytes(@token_length)
+    @token_length
+    |> :crypto.strong_rand_bytes
     |> Base.url_encode64
     |> binary_part(0, @token_length)
   end

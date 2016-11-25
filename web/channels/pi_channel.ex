@@ -1,4 +1,8 @@
 defmodule Ravioli.PiChannel do
+  @moduledoc """
+    Let us not worry about docs right now
+  """
+
   use Ravioli.Web, :channel
 
   alias Ravioli.ResultsServer

@@ -1,5 +1,10 @@
 defmodule Ravioli do
+  @moduledoc """
+    Let us not worry about docs right now
+  """
+
   use Application
+  alias Ravioli.Endpoint
 
   # See http://elixir-lang.org/docs/stable/elixir/Application.html
   # for more information on OTP Applications
@@ -13,7 +18,8 @@ defmodule Ravioli do
       # Start the endpoint when the application starts
       supervisor(Ravioli.Endpoint, []),
       worker(Ravioli.ResultsServer, [])
-      # Start your own worker by calling: Ravioli.Worker.start_link(arg1, arg2, arg3)
+      # Start your own worker by calling:
+        #Ravioli.Worker.start_link(arg1, arg2, arg3)
       # worker(Ravioli.Worker, [arg1, arg2, arg3]),
     ]
 
@@ -26,7 +32,7 @@ defmodule Ravioli do
   # Tell Phoenix to update the endpoint configuration
   # whenever the application is updated.
   def config_change(changed, _new, removed) do
-    Ravioli.Endpoint.config_change(changed, removed)
+    Endpoint.config_change(changed, removed)
     :ok
   end
 end
