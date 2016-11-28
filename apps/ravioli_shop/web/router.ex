@@ -13,18 +13,28 @@ defmodule RavioliShop.Router do
     plug :accepts, ["json"]
   end
 
+  
+  pipeline :authenticated do
+    plug RavioliShop.Plugs.AuthenticateUser
+  end
+
   scope "/", RavioliShop do
-    pipe_through :browser # Use the default browser stack
+    pipe_through :browser
 
     get "/", PageController, :index
 
   end
 
-  # Other scopes may use custom stacks.
   scope "/api", RavioliShop do
     pipe_through :api
 
     post "/sign_in", AuthController, :sign_in
-    post "/sign_up", AuthController, :sign_up
+    post "/sign_up", AuthController, :sign_up    
   end
+
+  scope "/api", Ravioli do
+    pipe_through [:api, :authenticated]
+
+    resources "/jobs", JobController, only: [:create, :index, :show, :update, :delete]
+  end  
 end

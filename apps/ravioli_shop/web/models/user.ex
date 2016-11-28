@@ -2,7 +2,6 @@ defmodule RavioliShop.User do
   @moduledoc """
     Let us not worry about docs right now
   """
-
   use RavioliShop.Web, :schema
   alias Comeonin.Bcrypt
 
@@ -10,6 +9,7 @@ defmodule RavioliShop.User do
     field :email, :string
     field :password, :string
     field :auth_token, :string
+    has_many :jobs, Job
 
     timestamps()
   end

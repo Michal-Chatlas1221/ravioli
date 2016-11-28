@@ -1,7 +1,7 @@
 defmodule RavioliShop.ErrorView do
   use RavioliShop.Web, :view
 
-  def render("404.html", _assigns) do
+  def render("404.json", _assigns) do
     "Page not found"
   end
 
