@@ -1,5 +1,5 @@
 defmodule RavioliShop.Endpoint do
-  use Phoenix.Endpoint, otp_app: :ravioli
+  use Phoenix.Endpoint, otp_app: :ravioli_shop
 
   socket "/socket", RavioliShop.UserSocket
 
