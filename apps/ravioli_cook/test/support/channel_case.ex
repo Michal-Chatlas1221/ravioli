@@ -32,8 +32,10 @@ defmodule RavioliCook.ChannelCase do
   end
 
   setup tags do
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(RavioliCook.Repo)
+
     unless tags[:async] do
-      Ecto.Adapters.SQL.restart_test_transaction(RavioliCook.Repo, [])
+      Ecto.Adapters.SQL.Sandbox.mode(RavioliCook.Repo, {:shared, self()})
     end
 
     :ok
