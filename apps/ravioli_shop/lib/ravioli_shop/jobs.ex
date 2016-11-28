@@ -1,5 +1,5 @@
-defmodule Ravioli.Jobs do
-  alias Ravioli.{Repo, User, Job}
+defmodule RavioliShop.Jobs do
+  alias RavioliShop.{Repo, User, Job}
 
   def create_job(user, job_params) do
     user |> Ecto.build_assoc(:jobs)

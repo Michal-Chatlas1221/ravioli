@@ -1,6 +1,6 @@
-defmodule Ravioli.Plugs.AuthenticateUser do
+defmodule RavioliShop.Plugs.AuthenticateUser do
   import Plug.Conn
-  alias Ravioli.{User, Repo}
+  alias RavioliShop.{User, Repo}
 
   def init(options), do: options
 

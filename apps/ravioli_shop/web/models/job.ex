@@ -1,5 +1,5 @@
-defmodule Ravioli.Job do
-  use Ravioli.Web, :schema
+defmodule RavioliShop.Job do
+  use RavioliShop.Web, :schema
   
   schema "jobs" do
     field :type, :string

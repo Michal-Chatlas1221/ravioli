@@ -1,6 +1,6 @@
-defmodule Ravioli.JobController do
-  use Ravioli.Web, :controller
-  alias Ravioli.{ErrorView, Jobs, Job}
+defmodule RavioliShop.JobController do
+  use RavioliShop.Web, :controller
+  alias RavioliShop.{ErrorView, Jobs, Job}
 
   def create(conn, job_params) do
     user = conn.assigns.current_user

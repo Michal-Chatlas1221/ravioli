@@ -32,7 +32,7 @@ defmodule RavioliShop.Router do
     post "/sign_up", AuthController, :sign_up    
   end
 
-  scope "/api", Ravioli do
+  scope "/api", RavioliShop do
     pipe_through [:api, :authenticated]
 
     resources "/jobs", JobController, only: [:create, :index, :show, :update, :delete]
