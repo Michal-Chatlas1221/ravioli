@@ -1,4 +1,4 @@
-defmodule Ravioli.Repo.Migrations.AddJobSchema do
+defmodule RavioliShop.Repo.Migrations.AddJobSchema do
   use Ecto.Migration
 
   def change do
