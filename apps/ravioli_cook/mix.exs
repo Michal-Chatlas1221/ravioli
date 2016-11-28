@@ -1,29 +1,29 @@
-defmodule RavioliShop.Mixfile do
+defmodule RavioliCook.Mixfile do
   use Mix.Project
 
   def project do
-    [app: :ravioli_shop,
+    [app: :ravioli_cook,
      version: "0.0.1",
      build_path: "../../_build",
      config_path: "../../config/config.exs",
      deps_path: "../../deps",
      lockfile: "../../mix.lock",
-     elixir: "~> 1.2",
+     elixir: "~> 1.0",
      elixirc_paths: elixirc_paths(Mix.env),
      compilers: [:phoenix, :gettext] ++ Mix.compilers,
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
-     aliases: aliases(),
-     deps: deps()]
+     aliases: aliases,
+     deps: deps]
   end
 
   # Configuration for the OTP application.
   #
   # Type `mix help compile.app` for more information.
   def application do
-    [mod: {RavioliShop, []},
-     applications: [:corsica, :phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :comeonin,
-                    :logger, :gettext, :phoenix_ecto, :postgrex]]
+    [mod: {RavioliCook, []},
+     applications: [:phoenix, :phoenix_html, :cowboy, :logger, :gettext,
+                    :phoenix_ecto, :postgrex]]
   end
 
   # Specifies which paths to compile per environment.
@@ -35,20 +35,15 @@ defmodule RavioliShop.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [{:phoenix, "~> 1.2.1"},
-     {:phoenix_pubsub, "~> 1.0"},
-     {:phoenix_ecto, "~> 3.0"},
      {:postgrex, ">= 0.12.1"},
-     {:phoenix_html, "~> 2.6"},
+     {:phoenix_ecto, "~> 3.0"},
+     {:phoenix_html, "~> 2.4"},
      {:phoenix_live_reload, "~> 1.0", only: :dev},
-     {:gettext, "~> 0.11"},
-     {:cowboy, "~> 1.0"},
-     {:comeonin, "~> 2.5"},
-     {:corsica, "~> 0.5"},
-     {:credo, "~> 0.5", only: [:dev, :test]}
-    ]
+     {:gettext, "~> 0.9"},
+     {:cowboy, "~> 1.0"}]
   end
 
-  # Aliases are shortcuts or tasks specific to the current project.
+  # Aliases are shortcut or tasks specific to the current project.
   # For example, to create, migrate and run the seeds file at once:
   #
   #     $ mix ecto.setup
@@ -56,7 +51,6 @@ defmodule RavioliShop.Mixfile do
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     ["ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
-     "ecto.reset": ["ecto.drop", "ecto.setup"],
-     "test": ["ecto.create --quiet", "ecto.migrate", "test"]]
+     "ecto.reset": ["ecto.drop", "ecto.setup"]]
   end
 end

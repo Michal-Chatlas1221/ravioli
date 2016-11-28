@@ -34,5 +34,5 @@ defmodule RavioliShop.JobController do
       0 = status -> conn |> send_resp(200, "OK")
       status = status -> conn |> put_status(:not_found)  |> render(ErrorView, "404.json")
     end  
-  end 
+  end
 end

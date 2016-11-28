@@ -1,14 +1,14 @@
-defmodule RavioliShop.Endpoint do
-  use Phoenix.Endpoint, otp_app: :ravioli_shop
+defmodule RavioliCook.Endpoint do
+  use Phoenix.Endpoint, otp_app: :ravioli_cook
 
-  socket "/socket", RavioliShop.UserSocket
+  socket "/socket", RavioliCook.UserSocket
 
   # Serve at "/" the static files from "priv/static" directory.
   #
   # You should set gzip to true if you are running phoenix.digest
   # when deploying your static files in production.
   plug Plug.Static,
-    at: "/", from: :ravioli, gzip: false,
+    at: "/", from: :ravioli_cook, gzip: false,
     only: ~w(css fonts images js favicon.ico robots.txt)
 
   # Code reloading can be explicitly enabled under the
@@ -30,18 +30,10 @@ defmodule RavioliShop.Endpoint do
   plug Plug.MethodOverride
   plug Plug.Head
 
-  # The session will be stored in the cookie and signed,
-  # this means its contents can be read but not tampered with.
-  # Set :encryption_salt if you would also like to encrypt it.
   plug Plug.Session,
     store: :cookie,
-    key: "_ravioli_key",
-    signing_salt: "ULbf0050"
+    key: "_ravioli_cook_key",
+    signing_salt: "y6q04UF7"
 
-  plug Corsica,
-    origins: ["http://localhost:4444"],
-    allow_credentials: true,
-    allow_headers: ["authorization", "accept", "content-type", "origin"]
-
-  plug RavioliShop.Router
+  plug RavioliCook.Router
 end

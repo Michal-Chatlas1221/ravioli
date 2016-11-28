@@ -3,6 +3,7 @@ defmodule RavioliShop.User do
     Let us not worry about docs right now
   """
   use RavioliShop.Web, :schema
+  alias RavioliShop.Job
   alias Comeonin.Bcrypt
 
   schema "users" do

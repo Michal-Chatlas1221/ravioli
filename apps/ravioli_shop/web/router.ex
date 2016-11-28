@@ -13,6 +13,9 @@ defmodule RavioliShop.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :trusted_service do
+    plug RavioliShop.Plugs.TrustedService
+  end
   
   pipeline :authenticated do
     plug RavioliShop.Plugs.AuthenticateUser
@@ -36,5 +39,12 @@ defmodule RavioliShop.Router do
     pipe_through [:api, :authenticated]
 
     resources "/jobs", JobController, only: [:create, :index, :show, :update, :delete]
-  end  
+  end
+
+  scope "/api/cook", RavioliShop do 
+    pipe_through [:api, :trusted_service]
+
+    get "/pending", CookController, :pending
+    post "/status", CookController, :split_status
+  end    
 end
