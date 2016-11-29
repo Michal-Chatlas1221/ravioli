@@ -28,7 +28,7 @@ defmodule RavioliShop.User do
   end
 
   defp encrypt_password(changeset) do
-    case get_change(chagneset, :password) do
+    case get_change(changeset, :password) do
       "" <> password ->
         hashed_password = Bcrypt.hashpwsalt(password)
         put_change(changeset, :password, hashed_password)
