@@ -28,4 +28,15 @@ defmodule RavioliShop.AuthTest do
       assert {:ok, _} = Auth.get_auth_token(@email, @password)
     end
   end
+
+  describe "find_user_or_create_new" do
+    test "for existing user", %{user: user} do
+      assert user == Auth.find_user_or_create_new(@email, @password)
+    end
+
+    test "for a new user" do
+      assert {:ok, %User{email: "new@email"}} =
+        Auth.find_user_or_create_new("new@email", "password")
+    end
+  end
 end
