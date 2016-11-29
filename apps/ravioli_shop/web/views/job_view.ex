@@ -1,12 +1,22 @@
 defmodule RavioliShop.JobView do
   use RavioliShop.Web, :view
-  alias RavioliShop.{Job, User}
+  alias RavioliShop.{Job, User, ScriptFile}
 
   def render("show.json", %Job{} = job) do
-  	%{id: job.id, result: job.result, input: job.input, type: job.type}
+  	%{
+      id: job.id,
+      result: job.result,
+      input: job.input,
+      type: job.type,
+      script_file: file_path(job.script_file)
+    }
   end
 
   def render("index.json", %User{} = user) do
     Enum.map(user.jobs, fn(x) -> render("show.json", x) end)
+  end
+
+  defp file_path(file) do
+    RavioliShop.Endpoint.url <> "/uploads/jobs/scripts/" <> file.file_name
   end
 end

@@ -5,6 +5,7 @@ defmodule RavioliShop.Jobs do
     user |> Ecto.build_assoc(:jobs)
          |> Job.changeset(job_params)
          |> Repo.insert
+
     Repo.preload(user, :jobs)
   end
 
@@ -21,12 +22,12 @@ defmodule RavioliShop.Jobs do
     Repo.get_by(Job, [id: id, user_id: user.id])
   end
 
-  def find_and_delete(user, id) do 
+  def find_and_delete(user, id) do
     case get_job(user, id) do
-      %Job{} = job -> 
+      %Job{} = job ->
         job |> Repo.delete
         0
       nil -> 1
-    end   	
+    end
   end
 end
