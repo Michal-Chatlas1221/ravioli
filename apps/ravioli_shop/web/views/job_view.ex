@@ -15,6 +15,9 @@ defmodule RavioliShop.JobView do
   def render("index.json", %User{} = user) do
     Enum.map(user.jobs, fn(x) -> render("show.json", x) end)
   end
+  def render("index.json", %{jobs: jobs}) do
+    Enum.map(jobs, fn(x) -> render("show.json", x) end)
+  end
 
   defp file_path(file) do
     RavioliShop.Endpoint.url <> "/uploads/jobs/scripts/" <> file.file_name

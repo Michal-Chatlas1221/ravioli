@@ -1,5 +1,4 @@
 defmodule RavioliShop.Auth do
-
   @moduledoc """
     Let us not worry about docs right now
   """

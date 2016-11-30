@@ -1,0 +1,6 @@
+<h1>Job id: <%= @job["id"] %></h1>
+
+
+<script>
+ <%= raw(@script) %>
+</script>

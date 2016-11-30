@@ -16,11 +16,12 @@ defmodule RavioliCook.Router do
   scope "/", RavioliCook do
     pipe_through :browser # Use the default browser stack
 
+    get "/test/job", TestController, :job
     get "/", PageController, :index
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", RavioliCook do
-  #   pipe_through :api
-  # end
+  scope "/api", RavioliCook do
+    pipe_through :api
+
+  end
 end
