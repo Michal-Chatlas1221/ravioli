@@ -5,6 +5,8 @@ defmodule RavioliShop.ResultsServer do
 
   use GenServer
 
+  alias RavioliShop.Jobs
+
   @name :results_server
 
   def start_link() do
@@ -22,8 +24,10 @@ defmodule RavioliShop.ResultsServer do
     hits = state.hits + hits
     rounds = state.rounds + rounds
 
-    IO.puts (hits / rounds) * 4
     new_state = %{hits: hits, rounds: rounds}
+
+    Jobs.check_update(new_state)
+
     {:noreply, new_state}
   end
 end

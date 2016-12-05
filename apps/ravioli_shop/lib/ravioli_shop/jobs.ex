@@ -22,6 +22,10 @@ defmodule RavioliShop.Jobs do
     Repo.get_by(Job, [id: id, user_id: user.id])
   end
 
+  def check_result_update(params) do
+    
+  end
+
   def find_and_delete(user, id) do
     case get_job(user, id) do
       %Job{} = job ->
