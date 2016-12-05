@@ -2,6 +2,7 @@ defmodule RavioliShop.UserSocket do
   use Phoenix.Socket
 
   channel "pi:*", RavioliShop.PiChannel
+  channel "result:*", RavioliShop.ResultChannel
 
   transport :websocket, Phoenix.Transports.WebSocket
 

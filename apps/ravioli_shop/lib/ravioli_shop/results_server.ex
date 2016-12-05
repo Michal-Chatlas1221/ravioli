@@ -1,4 +1,4 @@
-defmodule RavioliShop.ResultsServer do
+defmodule RavioliShop.PiResultsServer do
   @moduledoc """
     Let us not worry about docs right now
   """
@@ -7,7 +7,7 @@ defmodule RavioliShop.ResultsServer do
 
   alias RavioliShop.Jobs
 
-  @name :results_server
+  @name :pi_results_server
 
   def start_link() do
     GenServer.start_link(__MODULE__, :ok, name: @name)
@@ -24,9 +24,9 @@ defmodule RavioliShop.ResultsServer do
     hits = state.hits + hits
     rounds = state.rounds + rounds
 
-    new_state = %{hits: hits, rounds: rounds}
+    new_state = %{hits: hits, rounds: rounds} |> IO.inspect
 
-    Jobs.check_update(new_state)
+    # Jobs.check_update(new_state)
 
     {:noreply, new_state}
   end
