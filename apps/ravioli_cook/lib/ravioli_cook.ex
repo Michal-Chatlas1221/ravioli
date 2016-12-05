@@ -11,6 +11,7 @@ defmodule RavioliCook do
       supervisor(RavioliCook.Endpoint, []),
       # Start the Ecto repository
       supervisor(RavioliCook.Repo, []),
+      worker(RavioliCook.JobFetcher.Server, [])
       # Here you could define other workers and supervisors as children
       # worker(RavioliCook.Worker, [arg1, arg2, arg3]),
     ]

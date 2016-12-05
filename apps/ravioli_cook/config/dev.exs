@@ -40,3 +40,6 @@ config :ravioli_cook, RavioliCook.Repo,
   database: "ravioli_cook_dev",
   hostname: "localhost",
   pool_size: 10
+
+
+config :ravioli_cook, :shop_url, "http://localhost:4000/api"

@@ -23,7 +23,8 @@ defmodule RavioliShop.Mixfile do
   def application do
     [mod: {RavioliShop, []},
      applications: [:corsica, :phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :comeonin,
-                    :logger, :gettext, :phoenix_ecto, :postgrex]]
+                    :logger, :gettext, :phoenix_ecto, :postgrex, :arc, :arc_ecto
+                   ]]
   end
 
   # Specifies which paths to compile per environment.
@@ -34,7 +35,10 @@ defmodule RavioliShop.Mixfile do
   #
   # Type `mix help deps` for examples and options.
   defp deps do
-    [{:phoenix, "~> 1.2.1"},
+    [
+     {:arc, "~> 0.6.0-rc3"},
+     {:arc_ecto, "~> 0.5.0-rc1"},
+     {:phoenix, "~> 1.2.1"},
      {:phoenix_pubsub, "~> 1.0"},
      {:phoenix_ecto, "~> 3.0"},
      {:postgrex, ">= 0.12.1"},

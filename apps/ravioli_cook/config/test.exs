@@ -17,3 +17,5 @@ config :ravioli_cook, RavioliCook.Repo,
   database: "ravioli_cook_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
+
+config :ravioli_cook, :jobs_api, RavioliCook.JobFetcher.TestApi
