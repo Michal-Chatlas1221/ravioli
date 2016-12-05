@@ -9,5 +9,5 @@ defmodule RavioliCook.TestView do
     render_one(job, RavioliCook.TestView, "job.json", as: :job)
   end
 
-  defp render("job.json", %{job: job}), do: job
+  def render("job.json", %{job: job}), do: job
 end
