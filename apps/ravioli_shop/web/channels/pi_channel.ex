@@ -11,8 +11,8 @@ defmodule RavioliShop.PiChannel do
     {:ok, socket}
   end
 
-  def handle_in("result", %{"round" => round, "hit" => hit}, socket) do
-    ResultsServer.add_result(hit, round)
+  def handle_in("result", %{"round" => round, "hit" => hit, "job_id" => job_id}, socket) do
+    ResultsServer.add_result(hit, round, job_id)
     push(socket, "calculate", %{})
     {:noreply, socket}
   end
