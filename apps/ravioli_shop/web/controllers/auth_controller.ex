@@ -4,9 +4,9 @@ defmodule RavioliShop.AuthController do
   alias RavioliShop.{ErrorView, Auth}
 
   def sign_in(conn, %{"email" => email, "password" => password}) do
-    case Auth.get_auth_token(email, password) do
-      {:ok, token} ->
-        render(conn, "sign_in.json", token: token)
+    case Auth.get_user(email, password) do
+      {:ok, user} ->
+        render(conn, "sign_in.json", user: user)
       {:error, _} ->
         conn |> put_status(:unauthorized) |> render(ErrorView, "401.json")
     end

@@ -8,11 +8,11 @@ defmodule RavioliShop.Auth do
 
   @token_length 20
 
-  def get_auth_token(email, password) do
+  def get_user(email, password) do
     User
     |> Repo.get_by(email: email)
     |> authenticate(password)
-    |> get_auth_token()
+    |> get_signed_in_user()
   end
 
   def find_user_or_create_new(email, password) do
@@ -34,17 +34,17 @@ defmodule RavioliShop.Auth do
   end
   defp authenticate(_, _), do: {:error, :unauthorized}
 
-  defp get_auth_token({:error, error}), do: {:error, error}
-  defp get_auth_token({:ok, %User{auth_token: nil} = user}) do
+  defp get_signed_in_user({:error, error}), do: {:error, error}
+  defp get_signed_in_user({:ok, %User{auth_token: nil} = user}) do
     token = generate_token()
 
     user
     |> User.sign_in_changeset(%{auth_token: token})
     |> Repo.update()
 
-    {:ok, token}
+    {:ok, user}
   end
-  defp get_auth_token({:ok, %User{auth_token: token}}), do: {:ok, token}
+  defp get_signed_in_user({:ok, user}), do: {:ok, user}
 
   defp generate_token() do
     @token_length
