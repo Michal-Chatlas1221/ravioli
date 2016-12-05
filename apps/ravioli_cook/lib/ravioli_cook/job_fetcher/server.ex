@@ -19,18 +19,20 @@ defmodule RavioliCook.JobFetcher.Server do
   @doc "Returns the list of current jobs"
   def get_jobs(), do: GenServer.call(@name, :get_jobs)
 
-  def get_first(), do: GenServer.call(@name, :get_first)
+  def get_task(), do: GenServer.call(@name, :get_task)
 
   # Callbacks
   def init(%{}) do
     send(self(), :fetch_jobs)
-    {:ok, %{jobs: [], tasks: []]}}
+    {:ok, %{jobs: [], tasks: []}}
   end
 
-  def handle_call(:get_first, _from, %{jobs: jobs} = state) do
-    [h | t] = jobs
-    new_jobs = t ++ [h]
-    {:reply, h, %{state | jobs: new_jobs}}
+  def handle_call(:get_task, _from, %{tasks: []} = state) do
+    {:reply, nil, state}
+  end
+  def handle_call(:get_task, _from, %{tasks: [task | rest]} = state) do
+    new_state = %{state | tasks: rest}
+    {:reply, task, new_state}
   end
 
   def handle_call(:get_jobs, _from, %{jobs: jobs} = state) do
@@ -62,10 +64,29 @@ defmodule RavioliCook.JobFetcher.Server do
     Enum.map(1..10, fn _ -> %{"job_type" => "pi", "job_id" => id, "rounds" => "1000000"} end)
   end
 
-  def divide_job_into_tasks(%{"type" => "multiply", "id" => id, "input" => input}) do
-    Poison.decode!(input) 
-    |> Enum.map(fn (row, index)-> %{"job_type" => "multiply", "job_id" => id, "row" => index, "data" => input})
+  def divide_job_into_tasks(job) do
+    %{
+      "type" => "multiply",
+      "id" => id,
+      "input" => input,
+      "script_file" => script_file
+    } = job
+
+    Poison.decode!(input)
+    |> Map.get("matrix_a")
+    |> IO.inspect
+    |> Stream.with_index()
+    |> Enum.map(fn {row, index} ->
+      %{
+        "job_type" => "multiply",
+        "job_id" => id,
+        "row" => index,
+        "data" => input,
+        "script_file" => script_file
+      }
+    end)
+    |> IO.inspect
   end
 
-  
+
 end

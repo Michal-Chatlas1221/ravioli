@@ -1,26 +1,45 @@
 import "phoenix_html";
 import socket from "./socket";
 
-const pushResults = (results) => {
-  channel.push("result", results);
+const pushDataRequest = (results) => {
+  channel.push("data_request", {})
 };
 
+const calculate = (data) => {
+  console.group();
+  console.log("Data: ", data);
+  console.log('Hi, monte carlo pi');
+  const round = data["rounds"];
+  let hit = 0;
+  let x, y;
 
-let channel = socket.channel("pi:monte", {});
-channel.on("calculate", x => {
-	console.log("received calculate")
-  let data    = fetchJobData();
-  let results = calculate(data);
-  pushResults(results);
+  for (var i = 0; i < round; i++) {
+	  x = Math.random();
+	  y = Math.random();
+
+	  if ((x*x + y*y)<1) hit++;
+  }
+
+  console.log(hit);
+  console.groupEnd();
+
+  return {hit, round};
+};
+
+let channel = socket.channel("tasks:*", {});
+channel.on("data_response", data => {
+	console.log("received data_resp")
+  console.log(data)
+  let results = calculate(data)
+  console.log(results)
+  pushDataRequest()
 });
 
 channel.join()
-  .receive("ok", resp => { console.log("Joined successfully", resp); })
+  .receive("ok", resp => {
+    console.log("Joined successfully", resp);
+    pushDataRequest()
+  })
   .receive("error", resp => { console.log("Unable to join", resp); });
 
 console.log("channel", channel)
-
-let data    = fetchJobData();
-let results = calculate(data);
-
-pushResults(results);
