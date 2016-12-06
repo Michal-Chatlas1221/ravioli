@@ -21,8 +21,7 @@ defmodule RavioliShop.MultiplyResultsServer do
   end
 
   def handle_cast({:add_result_row, row_id, row}, state) do
-    IO.puts "add result row"
-    new_row = %{row_id: to_int(row_id), row: row} |> IO.inspect
+    new_row = %{row_id: to_int(row_id), row: row}
     new_state =
       state ++ [new_row]
       |> Enum.uniq_by(fn row -> row.row_id end)
