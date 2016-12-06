@@ -6,21 +6,21 @@ defmodule RavioliShop.ResultChannel do
   use RavioliShop.Web, :channel
 
   alias RavioliShop.PiResultsServer
+  alias RavioliShop.MultiplyResultsServer
 
   def join("result:*", _msg, socket) do
     {:ok, socket}
   end
 
   def handle_in("result", data, socket) do
-    IO.puts "result:"
-    IO.inspect data
     case data["type"] do
       "pi" ->
-        IO.puts "result_pi"
         %{"hit" => hit, "round" => round} = data["result"]
         PiResultsServer.add_result(hit, round)
       "multiply" ->
         IO.puts "multiply"
+        IO.inspect data
+        MultiplyResultsServer.add_result_row(data["row"], data["result"])
       _ -> nil
     end
     # ResultsServer.add_result(hit, round, job_id)

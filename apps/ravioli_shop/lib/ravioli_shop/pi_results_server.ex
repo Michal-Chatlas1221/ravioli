@@ -21,13 +21,17 @@ defmodule RavioliShop.PiResultsServer do
   end
 
   def handle_cast({:add_result, hits, rounds}, state) do
-    hits = state.hits + hits
-    rounds = state.rounds + rounds
+    hits = state.hits + to_int(hits)
+    rounds = state.rounds + to_int(rounds)
 
-    new_state = %{hits: hits, rounds: rounds} |> IO.inspect
+    new_state = %{hits: hits, rounds: rounds}
+    IO.puts "current pi value: #{hits * 4 / rounds}"
 
     # Jobs.check_update(new_state)
 
     {:noreply, new_state}
   end
+
+  def to_int(i) when is_integer(i), do: i
+  def to_int(s), do: String.to_integer(s)
 end
