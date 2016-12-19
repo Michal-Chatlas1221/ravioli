@@ -6,6 +6,7 @@ defmodule RavioliCook.JobFetcher.Server do
   use GenServer
 
   alias RavioliCook.JobFetcher.Api
+  alias RavioliCook.{JobDivider, Job}
 
   @name :job_fetcher
   @interval 60_000
@@ -31,8 +32,6 @@ defmodule RavioliCook.JobFetcher.Server do
     {:reply, nil, state}
   end
   def handle_call(:get_task, _from, %{tasks: [task | rest]} = state) do
-    IO.puts "genserver"
-    IO.inspect task
     new_state = %{state | tasks: rest}
     {:reply, task, new_state}
   end
@@ -59,37 +58,12 @@ defmodule RavioliCook.JobFetcher.Server do
   end
 
   defp divide_jobs_into_tasks(jobs) do
-    Enum.flat_map(jobs, &divide_job_into_tasks(&1))
+    jobs
+    |> Enum.map(&Job.from_map/1)
+    |> Enum.flat_map(&JobDivider.divide_job_into_tasks(&1))
   end
 
-  def divide_job_into_tasks(%{"type" => "pi", "id" => id}) do
-    Enum.map(1..10, fn _ -> %{"job_type" => "pi", "job_id" => id, "rounds" => "1000000"} end)
-  end
-
-  def divide_job_into_tasks(job) do
-    %{
-      "type" => "multiply",
-      "id" => id,
-      "input" => input,
-      "script_file" => script_file
-    } = job
-
-    Poison.decode!(input)
-    |> Map.get("matrix_a")
-    |> Stream.with_index()
-    |> Enum.map(fn {row, index} ->
-      %{
-        "job_type" => "multiply",
-        "job_id" => id,
-        "row" => index,
-        "data" => input,
-        "script_file" => script_file
-      }
-    end)
-    |> duplicate_each_task([])
-  end
 
   def duplicate_each_task([], acc), do: acc
   def duplicate_each_task([h | t], acc), do: duplicate_each_task(t, [h, h | acc])
-
 end
