@@ -22,6 +22,8 @@ defmodule RavioliCook.JobFetcher.Server do
 
   def get_task(), do: GenServer.call(@name, :get_task)
 
+  def add_tasks(tasks), do: GenServer.cast(@name, {:add_tasks, tasks})
+
   # Callbacks
   def init(%{}) do
     send(self(), :fetch_jobs)
@@ -53,6 +55,13 @@ defmodule RavioliCook.JobFetcher.Server do
     new_state = %{state | jobs: new_jobs, tasks: new_tasks}
 
     Process.send_after(self(), :fetch_jobs, @interval)
+
+    {:noreply, new_state}
+  end
+
+  def handle_cast({:add_tasks, tasks}, state) do
+    new_tasks = state.tasks ++ tasks
+    new_state = %{state | tasks: tasks}
 
     {:noreply, new_state}
   end
