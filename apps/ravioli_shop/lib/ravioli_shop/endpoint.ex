@@ -41,7 +41,7 @@ defmodule RavioliShop.Endpoint do
   plug Corsica,
     origins: ["http://localhost:4444"],
     allow_credentials: true,
-    allow_headers: ["authorization", "accept", "content-type", "origin", "x-auth-token"]
+    allow_headers: ["x-auth-token", "accept", "content-type", "origin"]
 
   plug RavioliShop.Router
 end
