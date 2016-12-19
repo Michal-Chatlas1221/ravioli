@@ -26,6 +26,7 @@ defmodule RavioliCook.JobDivider do
 
     input
     |> Poison.decode!()
+    |> Map.get("matrix_a")
     |> Stream.with_index()
     |> Enum.map(fn {_row, index} ->
       %{

@@ -17,7 +17,7 @@ defmodule RavioliShop.ResultChannel do
       "pi" ->
         %{"hit" => hit, "round" => round} = data["result"]
         PiResultsServer.add_result(hit, round)
-      "multiply" ->
+      "matrix_by_rows" ->
         IO.puts "multiply"
         IO.inspect data
         MultiplyResultsServer.add_result_row(data["row"], data["result"])

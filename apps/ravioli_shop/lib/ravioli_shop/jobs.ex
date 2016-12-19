@@ -23,7 +23,7 @@ defmodule RavioliShop.Jobs do
   end
 
   def check_result_update(params) do
-    
+
   end
 
   def find_and_delete(user, id) do
