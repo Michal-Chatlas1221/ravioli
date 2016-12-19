@@ -1,13 +1,11 @@
 import {Socket} from "phoenix"
 
-let socket = new Socket("ws://localhost:4000/socket", {params: {token: window.userToken}})
+let socket = new Socket("ws://localhost:4001/socket", {params: {token: window.userToken}})
+let shopSocket = new Socket("ws://localhost:4000/socket", {params: {token: window.userToken}})
 
 socket.connect()
+shopSocket.connect()
 
 // Now that you are connected, you can join channels with a topic:
-let channel = socket.channel("pi:monte", {})
-channel.join()
-  .receive("ok", resp => { console.log("Joined successfully", resp) })
-  .receive("error", resp => { console.log("Unable to join", resp) })
 
-export default socket
+export {socket, shopSocket}

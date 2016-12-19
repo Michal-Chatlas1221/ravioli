@@ -1,11 +1,13 @@
-defmodule RavioliShop.ResultsServer do
+defmodule RavioliShop.PiResultsServer do
   @moduledoc """
     Let us not worry about docs right now
   """
 
   use GenServer
 
-  @name :results_server
+  alias RavioliShop.Jobs
+
+  @name :pi_results_server
 
   def start_link() do
     GenServer.start_link(__MODULE__, :ok, name: @name)
@@ -19,11 +21,17 @@ defmodule RavioliShop.ResultsServer do
   end
 
   def handle_cast({:add_result, hits, rounds}, state) do
-    hits = state.hits + hits
-    rounds = state.rounds + rounds
+    hits = state.hits + to_int(hits)
+    rounds = state.rounds + to_int(rounds)
 
-    IO.puts (hits / rounds) * 4
     new_state = %{hits: hits, rounds: rounds}
+    IO.puts "current pi value: #{hits * 4 / rounds}"
+
+    # Jobs.check_update(new_state)
+
     {:noreply, new_state}
   end
+
+  def to_int(i) when is_integer(i), do: i
+  def to_int(s), do: String.to_integer(s)
 end

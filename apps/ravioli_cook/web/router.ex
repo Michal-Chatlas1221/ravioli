@@ -23,6 +23,6 @@ defmodule RavioliCook.Router do
   scope "/api", RavioliCook do
     pipe_through :api
 
-    resources "jobs", TestController, only: [:show, :index]
+    resources "/jobs", TestController, only: [:show, :index]
   end
 end
