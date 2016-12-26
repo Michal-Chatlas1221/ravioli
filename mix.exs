@@ -22,7 +22,8 @@ defmodule Ravioli.Mixfile do
   # and cannot be accessed from applications inside the apps folder
   defp deps do
     [
-      {:mix_test_watch, "~> 0.2", only: :dev}
+      {:mix_test_watch, "~> 0.2", only: :dev},
+      {:ex_doc, "~> 0.14", only: :dev}
     ]
   end
 end
