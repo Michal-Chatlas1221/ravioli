@@ -8,6 +8,12 @@ defmodule RavioliCook.Tracker.VectorClock do
 
   alias RavioliCook.Tracker.VectorClock
 
+  @doc "Initializes an initial clock for current node"
+  def initialize do
+    node = Node.self()
+    %VectorClock{node: node, clocks: %{node => 1}}
+  end
+
   @doc """
   Synchronizes two clocks and increases the first one"
 
@@ -16,6 +22,11 @@ defmodule RavioliCook.Tracker.VectorClock do
       iex> RavioliCook.Tracker.VectorClock.update(c1, c2)
       %RavioliCook.Tracker.VectorClock{node: "n1", clocks: %{"n1" => 2, "n2" => 4}}
   """
+  def update(%VectorClock{} = current) do
+    updated_clocks = increase_clock(current.clocks, current.node)
+
+    %{current | clocks: updated_clocks}
+  end
   def update(%VectorClock{} = current, %VectorClock{} = other) do
     updated_clocks =
       current
@@ -23,6 +34,32 @@ defmodule RavioliCook.Tracker.VectorClock do
       |> increase_clock(current.node)
 
     %{current | clocks: updated_clocks}
+  end
+
+  @doc """
+  Compares two vector clocks. Returns `:gt`, `:lt` or `:error`
+  """
+  def compare(%VectorClock{} = clock1, %VectorClock{} = clock2) do
+    values1 = clock1 |> merge_clocks(clock2) |> Map.values()
+    values2 = clock2 |> merge_clocks(clock1) |> Map.values()
+
+    case do_compare(values1, values2, nil) do
+      true   -> :gt
+      false  -> :lt
+      :error -> :error
+    end
+  end
+
+  defp do_compare([h1 | _] = values1, [h2 | _] = values2, nil) do
+    do_compare(values1, values2, h1 > h2)
+  end
+  defp do_compare([], [], current), do: current
+  defp do_compare([h1 | t1], [h2 | t2], current) do
+    if h1 > h2 == current do
+      do_compare(t1, t2, current)
+    else
+      :error
+    end
   end
 
   defp merge_clocks(current, other) do
