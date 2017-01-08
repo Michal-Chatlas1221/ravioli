@@ -17,6 +17,6 @@ defmodule RavioliShop.Job do
     struct
     |> cast(params, [:type, :input, :user_id, :result, :divide_server_url])
     |> cast_attachments(params, [:script_file])
-    |> validate_required([:type, :input, :user_id, :script_file])
+    |> validate_required([:type, :input, :user_id])
   end
 end
