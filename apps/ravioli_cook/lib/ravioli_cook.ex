@@ -7,8 +7,6 @@ defmodule RavioliCook do
     children = [
       supervisor(RavioliCook.Endpoint, []),
       supervisor(RavioliCook.Repo, []),
-      worker(RavioliCook.Tracker, []),
-      worker(RavioliCook.Tracker.ClockServer, []),
       worker(RavioliCook.JobFetcher.Server, []),
       supervisor(Task.Supervisor, [[name: RavioliCook.TaskSupervisor]])
     ]
