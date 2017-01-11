@@ -8,6 +8,7 @@ defmodule RavioliCook do
       supervisor(RavioliCook.Endpoint, []),
       supervisor(RavioliCook.Repo, []),
       worker(RavioliCook.JobFetcher.Server, []),
+      supervisor(RavioliCook.Presence, []),
       supervisor(Task.Supervisor, [[name: RavioliCook.TaskSupervisor]])
     ]
 
