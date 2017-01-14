@@ -1,4 +1,8 @@
 defmodule RavioliCook.Tracker.NodeTracker do
+  @moduledoc """
+  Tracks connected nodes. Every `@heartbeat_time` milliseconds, checks which nodes
+  are connected and starts monitoring them.
+  """
   use GenServer
 
   @name :node_tracker
