@@ -5,7 +5,7 @@ defmodule RavioliCook.JobDivider do
   to a given url with `RavioliCook.Job` struct encoded in JSON. Expects a json
   representation of `RavioliCook.Task` list.
   - If `divide_server_url` is not set, it divides the job based on its `type`.
-  Currently supported types are `"pi"`, `"matrix_by_rows"`.
+  Currently supported types are `"pi"`, `"matrix_by_rows"`, `"list_n"`.
   """
   alias RavioliCook.{JobDivider, Job}
 
@@ -17,6 +17,23 @@ defmodule RavioliCook.JobDivider do
     end)
 
     []
+  end
+
+  def divide_job_into_tasks(%Job{type: "list_" <> count} = job) do
+    count = String.to_integer(count)
+
+    job.input
+    |> Poison.decode!()
+    |> Enum.chunk(count)
+    |> Stream.with_index()
+    |> Enum.map(fn {task_input, index} ->
+      %{
+        "input" => task_input,
+        "job_type" => "list_#{count}",
+        "job_id" => job.id,
+        "task_index" => index
+      }
+    end)
   end
 
   def divide_job_into_tasks(%Job{type: "pi"} = job) do
