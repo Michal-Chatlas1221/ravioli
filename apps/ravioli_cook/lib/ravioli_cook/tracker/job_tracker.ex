@@ -1,4 +1,4 @@
-defmodule RavioliCook.Tracker do
+defmodule RavioliCook.Tracker.JobTracker do
   @topic "job_tracker"
   alias RavioliCook.Presence
 

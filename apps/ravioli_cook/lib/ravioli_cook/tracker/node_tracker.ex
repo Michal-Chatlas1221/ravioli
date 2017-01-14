@@ -1,4 +1,4 @@
-defmodule RavioliCook.NodeTracker do
+defmodule RavioliCook.Tracker.NodeTracker do
   use GenServer
 
   @name :node_tracker
