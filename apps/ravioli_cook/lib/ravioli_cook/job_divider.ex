@@ -1,4 +1,12 @@
 defmodule RavioliCook.JobDivider do
+  @moduledoc """
+  Used to divide job into multiple tasks performed by the users' browsers.
+  - When the `divide_server_url` parameter is set for a job, makes a POST request
+  to a given url with `RavioliCook.Job` struct encoded in JSON. Expects a json
+  representation of `RavioliCook.Task` list.
+  - If `divide_server_url` is not set, it divides the job based on its `type`.
+  Currently supported types are `"pi"`, `"matrix_by_rows"`.
+  """
   alias RavioliCook.{JobDivider, Job}
 
   def divide_job_into_tasks(%Job{divide_server_url: url} = job) when is_binary(url) do
