@@ -5,27 +5,19 @@ defmodule RavioliCook.ResultChannel do
 
   use RavioliCook.Web, :channel
 
-  alias RavioliCook.Results.PiServer
-  alias RavioliShop.MultiplyResultsServer
+  alias RavioliCook.Results.ServerRegistry
 
   def join("result:job-" <> job_id, _msg, socket) do
-    IO.puts "joining job-#{job_id} result channel"
-    {:ok, socket}
+    pid = ServerRegistry.get_result_server(job_id)
+    new_socket = assign(socket, :result_server, pid)
+
+    {:ok, new_socket}
   end
 
   def handle_in("result", data, socket) do
-    case data["type"] do
-      "pi" ->
-        %{"hit" => hit, "round" => round} = data["result"]
-        PiResultsServer.add_result(hit, round)
-      "matrix_by_rows" ->
-        IO.puts "multiply"
-        IO.inspect data
-        MultiplyResultsServer.add_result_row(data["row"], data["result"])
-      _ -> nil
-    end
-    # ResultsServer.add_result(hit, round, job_id)
-    # push(socket, "calculate", %{})
+    pid = socket.assigns.result_server
+    RavioliCook.Results.add_result(pid, data)
+
     {:noreply, socket}
   end
 end

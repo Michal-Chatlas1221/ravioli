@@ -5,10 +5,8 @@ const pushTaskRequest = (results) => {
   taskChannel.push("task_request", {})
 };
 
-
 const pushResults = (task, results) => {
   let channel = getResultChannel(resultSocket, task);
-  console.log(channel)
   channel.push("result", results);
 }
 
@@ -16,9 +14,7 @@ const getResultChannel = (socket, task) => {
   const topic = `result:job-${task.job_id}`;
   let channel = socket.channels.find(c => c.topic == topic);
 
-  console.log(channel)
-
-  if (channel && channel.state == "joined") {
+  if (channel && (channel.state == "joined" || channel.state == "joining")) {
     return channel;
   }
 
@@ -33,27 +29,23 @@ const getResultChannel = (socket, task) => {
   return channel;
 }
 
-
-
 const calculatePi = (data) => {
-  const round = data["rounds"];
-  let hit = 0;
+  const rounds = data["rounds"];
+  let hits = 0;
   let x, y;
 
-  for (var i = 0; i < round; i++) {
+  for (var i = 0; i < rounds; i++) {
 	  x = Math.random();
 	  y = Math.random();
 
-	  if ((x*x + y*y)<1) hit++;
+	  if ((x*x + y*y)<1) hits++;
   }
 
-  return {hit, round};
+  return {hits, rounds};
 };
 const calculateMatrixRow = (data) => {
   let rowIndex = data.row
   let input = JSON.parse(data.data)
-
-  console.log("calc row ", rowIndex)
 
   return multiply(input.matrix_a, input.matrix_b, rowIndex);
 }
@@ -73,17 +65,18 @@ function multiply(a, b, r) {
 const calculate = (data) => {
   if (data.job_type == 'pi') {
     let result = calculatePi(data)
-    return {
-      result,
+    let x =  Object.assign({}, result, {
       job_id: data.job_id,
-      type: data.job_type
-    }
+      job_type: data.job_type,
+      task_index: data.task_index
+    })
+    return x;
   } else {
     let result = calculateMatrixRow(data)
     return {
       result,
       job_id: data.job_id,
-      type: data.job_type,
+      job_type: data.job_type,
       row: data.row
     }
   }
@@ -91,20 +84,9 @@ const calculate = (data) => {
 
 let taskChannel = socket.channel("tasks:*", {});
 taskChannel.on("task_response", data => {
-	console.log("received data_resp")
-  console.log(data)
-
-
-
   let results = calculate(data)
-  for(let i = 0; i < 1000000; i++) {
-    for(let j = 0; i < 1000000; i++) {
-      let a = i;
-    }
-  }
-  console.log(results)
 
-  pushResults(results, data)
+  pushResults(data, results)
   pushTaskRequest()
 });
 
