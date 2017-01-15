@@ -17,7 +17,6 @@ defmodule RavioliShop do
       supervisor(RavioliShop.Repo, []),
       # Start the endpoint when the application starts
       supervisor(Endpoint, []),
-      worker(RavioliShop.PiResultsServer, []),
       worker(RavioliShop.MultiplyResultsServer, [])
       # Start your own worker by calling:
         #RavioliShop.Worker.start_link(arg1, arg2, arg3)

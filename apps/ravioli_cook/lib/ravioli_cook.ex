@@ -10,6 +10,7 @@ defmodule RavioliCook do
       worker(RavioliCook.JobFetcher.Server, []),
       supervisor(RavioliCook.Presence, []),
       worker(RavioliCook.Tracker.NodeTracker, []),
+      worker(RavioliCook.Results.PiServer, []),
       supervisor(Task.Supervisor, [[name: RavioliCook.TaskSupervisor]])
     ]
 

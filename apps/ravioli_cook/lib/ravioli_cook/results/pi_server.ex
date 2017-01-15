@@ -1,11 +1,9 @@
-defmodule RavioliShop.PiResultsServer do
+defmodule RavioliCook.Results.PiServer do
   @moduledoc """
     Let us not worry about docs right now
   """
 
   use GenServer
-
-  alias RavioliShop.Jobs
 
   @name :pi_results_server
 

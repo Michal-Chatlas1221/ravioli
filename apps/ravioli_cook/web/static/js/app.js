@@ -1,15 +1,38 @@
 import "phoenix_html";
-import {socket, shopSocket} from "./socket";
+import {socket, resultSocket} from "./socket";
 
-const pushDataRequest = (results) => {
-  taskChannel.push("data_request", {})
+const pushTaskRequest = (results) => {
+  taskChannel.push("task_request", {})
 };
 
-let resultChannel = shopSocket.channel("result:*", {});
 
-const pushResults = (results) => {
-  resultChannel.push("result", results)
+const pushResults = (task, results) => {
+  let channel = getResultChannel(resultSocket, task);
+  console.log(channel)
+  channel.push("result", results);
 }
+
+const getResultChannel = (socket, task) => {
+  const topic = `result:job-${task.job_id}`;
+  let channel = socket.channels.find(c => c.topic == topic);
+
+  console.log(channel)
+
+  if (channel && channel.state == "joined") {
+    return channel;
+  }
+
+  channel = channel || socket.channel(topic);
+
+  channel.join()
+    .receive("ok", resp => {
+      console.log("Joined results successfully", resp);
+    })
+    .receive("error", resp => { console.log("Unable to join results", resp); });
+
+  return channel;
+}
+
 
 
 const calculatePi = (data) => {
@@ -67,26 +90,27 @@ const calculate = (data) => {
 }
 
 let taskChannel = socket.channel("tasks:*", {});
-taskChannel.on("data_response", data => {
+taskChannel.on("task_response", data => {
 	console.log("received data_resp")
   console.log(data)
 
+
+
   let results = calculate(data)
+  for(let i = 0; i < 1000000; i++) {
+    for(let j = 0; i < 1000000; i++) {
+      let a = i;
+    }
+  }
   console.log(results)
 
-  pushResults(results)
-  pushDataRequest()
+  pushResults(results, data)
+  pushTaskRequest()
 });
-
-resultChannel.join()
-  .receive("ok", resp => {
-    console.log("Joined results successfully", resp);
-  })
-  .receive("error", resp => { console.log("Unable to join results", resp); });
 
 taskChannel.join()
   .receive("ok", resp => {
     console.log("Joined successfully", resp);
-    pushDataRequest()
+    pushTaskRequest()
   })
   .receive("error", resp => { console.log("Unable to join", resp); });
