@@ -1,6 +1,7 @@
 defmodule RavioliCook.Job do
   defstruct id: nil, type: nil, input: nil, result: nil,
-    script_file: nil, user_id: nil, divide_server_url: nil
+    script_file: nil, user_id: nil, divide_server_url: nil,
+    division_type: nil, aggregation_type: nil
 
   def from_map(params) do
     %RavioliCook.Job{

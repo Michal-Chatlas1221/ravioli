@@ -6,6 +6,8 @@ defmodule RavioliShop.Job do
     field :type, :string
     field :input, :string
     field :result, :string
+    field :division_type, :string
+    field :aggregation_type, :string
     field :script_file, RavioliShop.ScriptFile.Type
     field :divide_server_url, :string
     belongs_to :user, User

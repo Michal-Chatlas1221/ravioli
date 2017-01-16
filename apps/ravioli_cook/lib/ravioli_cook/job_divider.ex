@@ -19,7 +19,7 @@ defmodule RavioliCook.JobDivider do
     []
   end
 
-  def divide_job_into_tasks(%Job{type: "list_" <> count} = job) do
+  def divide_job_into_tasks(%Job{division_type: "list_" <> count} = job) do
     count = String.to_integer(count)
 
     job.input
@@ -36,17 +36,18 @@ defmodule RavioliCook.JobDivider do
     end)
   end
 
-  def divide_job_into_tasks(%Job{type: "pi"} = job) do
-    Enum.map(1..10, fn _ ->
+  def divide_job_into_tasks(%Job{division_type: "pi"} = job) do
+    Enum.map(1..1_000_00, fn i ->
       %{
         "job_type" => "pi",
         "job_id" => job.id,
-        "rounds" => "1000000"
+        "rounds" => "1000000",
+        "task_index" => i
       }
     end)
   end
 
-  def divide_job_into_tasks(%Job{type: "matrix_by_rows"} = job) do
+  def divide_job_into_tasks(%Job{division_type: "matrix_by_rows"} = job) do
     %{id: id, input: input, script_file: script_file} = job
 
     input
