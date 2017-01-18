@@ -11,6 +11,6 @@ defmodule RavioliShop.ScriptFile do
   end
 
   def storage_dir(_version, {scope, file}) do
-    "apps/ravioli_shop/priv/static/uploads/jobs/scripts"
+    "priv/static/uploads/jobs/scripts"
   end
 end
