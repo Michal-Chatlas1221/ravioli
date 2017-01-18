@@ -15,9 +15,14 @@ defmodule RavioliShop.Job do
     timestamps()
   end
 
+  @attrs [
+    :type, :input, :user_id, :result, :divide_server_url, :division_type,
+    :aggregation_type
+  ]
+
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:type, :input, :user_id, :result, :divide_server_url])
+    |> cast(params, @attrs)
     |> cast_attachments(params, [:script_file])
     |> validate_required([:type, :input, :user_id])
   end

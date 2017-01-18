@@ -9,7 +9,14 @@ defmodule RavioliCook.JobDivider do
   """
   alias RavioliCook.{JobDivider, Job}
 
-  def divide_job_into_tasks(%Job{divide_server_url: url} = job) when is_binary(url) do
+  def divide_job_into_tasks(job) do
+    job
+    |> do_divide_job_into__tasks()
+    |> add_common_fields(job)
+  end
+
+
+  defp do_divide_job_into__tasks(%Job{divide_server_url: url} = job) when is_binary(url) do
     Task.Supervisor.start_child(RavioliCook.TaskSupervisor, fn ->
       tasks = JobDivider.Api.get_tasks(job)
 
@@ -19,7 +26,7 @@ defmodule RavioliCook.JobDivider do
     []
   end
 
-  def divide_job_into_tasks(%Job{division_type: "list_" <> count} = job) do
+  defp do_divide_job_into__tasks(%Job{division_type: "list_" <> count} = job) do
     count = String.to_integer(count)
 
     job.input
@@ -36,19 +43,18 @@ defmodule RavioliCook.JobDivider do
     end)
   end
 
-  def divide_job_into_tasks(%Job{division_type: "pi"} = job) do
-    Enum.map(1..1_000_00, fn i ->
+  defp do_divide_job_into__tasks(%Job{division_type: "pi"} = job) do
+    Enum.map(1..80, fn i ->
       %{
         "job_type" => "pi",
-        "job_id" => job.id,
         "rounds" => "1000000",
-        "task_index" => i
+        "task_index" => i,
       }
     end)
   end
 
-  def divide_job_into_tasks(%Job{division_type: "matrix_by_rows"} = job) do
-    %{id: id, input: input, script_file: script_file} = job
+  defp do_divide_job_into__tasks(%Job{division_type: "matrix_by_rows"} = job) do
+    %{input: input, script_file: script_file} = job
 
     input
     |> Poison.decode!()
@@ -57,13 +63,19 @@ defmodule RavioliCook.JobDivider do
     |> Enum.map(fn {_row, index} ->
       %{
         "job_type"    => "matrix_by_rows",
-        "job_id"      => id,
         "row"         => index,
         "data"        => input,
-        "script_file" => script_file
       }
     end)
   end
 
-  def divide_job_into_tasks(_), do: []
+  defp do_divide_job_into__tasks(_), do: []
+
+  defp add_common_fields(tasks, job) do
+    common_fields = %{
+      "job_id" => job.id,
+      "script_file" => job.script_file
+    }
+    Enum.map(tasks, fn task -> Map.merge(task, common_fields) end)
+  end
 end

@@ -9,7 +9,9 @@ defmodule RavioliShop.JobView do
       input: job.input,
       type: job.type,
       script_file: file_path(job.script_file),
-      divide_server_url: job.divide_server_url
+      divide_server_url: job.divide_server_url,
+      division_type: job.division_type,
+      aggregation_type: job.aggregation_type
     }
   end
 

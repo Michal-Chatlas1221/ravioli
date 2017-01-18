@@ -11,7 +11,9 @@ defmodule RavioliCook.Job do
       result: params["result"],
       script_file: params["script_file"],
       user_id: params["user_id"],
-      divide_server_url: params["divide_server_url"]
+      divide_server_url: params["divide_server_url"],
+      division_type: params["division_type"],
+      aggregation_type: params["aggregation_type"],
     }
   end
 end
