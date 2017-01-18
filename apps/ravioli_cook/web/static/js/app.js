@@ -29,65 +29,37 @@ const getResultChannel = (socket, task) => {
   return channel;
 }
 
-const calculatePi = (data) => {
-  const rounds = data["rounds"];
-  let hits = 0;
-  let x, y;
+const embedScriptFile = (scriptSrc, callback) => {
+  const id = "fetched-script-tag";
+  let oldScriptTag = document.getElementById(id);
 
-  for (var i = 0; i < rounds; i++) {
-	  x = Math.random();
-	  y = Math.random();
-
-	  if ((x*x + y*y)<1) hits++;
+  if (oldScriptTag && oldScriptTag.src == scriptSrc) {
+    callback();
   }
+  else {
+    if (oldScriptTag) oldScriptTag.remove();
 
-  return {hits, rounds};
-};
-const calculateMatrixRow = (data) => {
-  let rowIndex = data.row
-  let input = JSON.parse(data.data)
+    let scriptTag = document.createElement('script');
+    scriptTag.src = scriptSrc;
 
-  return multiply(input.matrix_a, input.matrix_b, rowIndex);
-}
-function multiply(a, b, r) {
-  var aNumRows = a.length, aNumCols = a[0].length,
-      bNumRows = b.length, bNumCols = b[0].length,
-      m = new Array(aNumRows);  // initialize array of rows
-  for (var c = 0; c < bNumCols; ++c) {
-    m[c] = 0;             // initialize the current cell
-    for (var i = 0; i < aNumCols; ++i) {
-      m[c] += a[r][i] * b[i][c];
-    }
-  }
-  return m;
-}
+    scriptTag.onload = callback;
+    scriptTag.onreadystatechange = callback;
 
-const calculate = (data) => {
-  if (data.job_type == 'pi') {
-    let result = calculatePi(data)
-    let x =  Object.assign({}, result, {
-      job_id: data.job_id,
-      job_type: data.job_type,
-      task_index: data.task_index
-    })
-    return x;
-  } else {
-    let result = calculateMatrixRow(data)
-    return {
-      result,
-      job_id: data.job_id,
-      job_type: data.job_type,
-      row: data.row
-    }
+    scriptTag.id = id;
+
+    document.head.appendChild(scriptTag);
   }
 }
+
 
 let taskChannel = socket.channel("tasks:*", {});
 taskChannel.on("task_response", data => {
-  let results = calculate(data)
+  embedScriptFile(data.script_file, () => {
+    let results = calculate(data)
 
-  pushResults(data, results)
-  pushTaskRequest()
+    pushResults(data, results)
+    pushTaskRequest()
+  });
 });
 
 taskChannel.join()
