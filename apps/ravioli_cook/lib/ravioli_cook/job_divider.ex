@@ -38,18 +38,20 @@ defmodule RavioliCook.JobDivider do
         "input" => task_input,
         "job_type" => "list_#{count}",
         "job_id" => job.id,
-        "task_index" => index
+        "task_id" => index
       }
     end)
   end
 
   defp do_divide_job_into__tasks(%Job{division_type: "pi"} = job) do
     Enum.map(1..80, fn i ->
+      IO.inspect i
       %{
         "job_type" => "pi",
         "rounds" => "1000000",
-        "task_index" => i,
+        "task_id" => i,
       }
+
     end)
   end
 
@@ -74,8 +76,9 @@ defmodule RavioliCook.JobDivider do
   defp add_common_fields(tasks, job) do
     common_fields = %{
       "job_id" => job.id,
-      "script_file" => job.script_file
+      "script_file" => job.script_file,
+      "task_id" =>  UUID.uuid4()
     }
-    Enum.map(tasks, fn task -> Map.merge(task, common_fields) end)
+    Enum.map(tasks, fn task -> Map.merge(common_fields, task) end)
   end
 end

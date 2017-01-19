@@ -23,7 +23,7 @@ defmodule RavioliCook.Mixfile do
   def application do
     [mod: {RavioliCook, []},
      applications: [:phoenix, :phoenix_html, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :postgrex, :tesla, :poison]]
+                    :phoenix_ecto, :postgrex, :tesla, :poison, :uuid]]
   end
 
   # Specifies which paths to compile per environment.
@@ -43,7 +43,8 @@ defmodule RavioliCook.Mixfile do
       {:gettext, "~> 0.9"},
       {:cowboy, "~> 1.0"},
       {:tesla, "~> 0.5.0"},
-      {:poison, ">= 1.0.0"}
+      {:poison, ">= 1.0.0"},
+      {:uuid, "~> 1.1"}
     ]
   end
 

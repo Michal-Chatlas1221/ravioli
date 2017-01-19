@@ -23,6 +23,7 @@ defmodule RavioliCook.JobFetcher.Server do
   def get_job(job_id), do: GenServer.call(@name, {:get_job, job_id})
 
   def get_task(), do: GenServer.call(@name, :get_task)
+  def remove_task(task_id), do: GenServer.cast(@name, {:remove_task, task_id})
 
   def add_tasks(tasks), do: GenServer.cast(@name, {:add_tasks, tasks})
 
@@ -36,8 +37,16 @@ defmodule RavioliCook.JobFetcher.Server do
     {:reply, nil, state}
   end
   def handle_call(:get_task, _from, %{tasks: [task | rest]} = state) do
-    new_state = %{state | tasks: rest}
+    IO.puts "get #{task["task_id"]}"
+    new_state = %{state | tasks: rest ++ [task]}
     {:reply, task, new_state}
+  end
+
+  def handle_cast({:remove_task, task_id}, %{tasks: tasks} = state) do
+    IO.puts "remove - #{task_id}"
+    new_tasks = Enum.reject(tasks, &(&1["task_id"] == task_id))
+
+    {:noreply, %{state | tasks: new_tasks}}
   end
 
   def handle_call(:get_jobs, _from, %{jobs: jobs} = state) do
@@ -50,17 +59,14 @@ defmodule RavioliCook.JobFetcher.Server do
   end
 
   def handle_info(:fetch_jobs, %{jobs: jobs, tasks: tasks} = state) do
+    # TODO: Check if job should be processed
+    fetched_jobs = Enum.map(@jobs_api.jobs().body, &Job.from_map/1)
 
-    new_jobs_list =
-      jobs ++ Enum.map(@jobs_api.jobs().body, &Job.from_map/1)
-      |> Enum.uniq_by(&(&1.id))
+    {new_jobs, new_tasks} = divide_jobs_into_tasks(fetched_jobs)
 
-    new_jobs = new_jobs_list -- jobs
-
-    new_jobs_tasks = divide_jobs_into_tasks(new_jobs)
-    new_tasks = tasks ++ new_jobs_tasks
-
-    new_state = %{state | jobs: new_jobs, tasks: new_tasks}
+    all_jobs = Enum.uniq_by(jobs ++ new_jobs, &(&1.id))
+    all_tasks = tasks ++ new_tasks
+    new_state = %{state | jobs: all_jobs, tasks: all_tasks}
 
     Process.send_after(self(), :fetch_jobs, @interval)
 
@@ -76,7 +82,14 @@ defmodule RavioliCook.JobFetcher.Server do
 
   defp divide_jobs_into_tasks(jobs) do
     jobs
-    |> Enum.flat_map(&JobDivider.divide_job_into_tasks(&1))
+    |> Enum.reduce({[], []}, fn (job, {jobs_acc, tasks_acc}) ->
+      tasks = JobDivider.divide_job_into_tasks(job)
+      tasks_count = length(tasks)
+
+      updated_job = %{job | required_results_count: tasks_count}
+
+      {[updated_job | jobs_acc], tasks ++ tasks_acc}
+    end)
   end
 
 

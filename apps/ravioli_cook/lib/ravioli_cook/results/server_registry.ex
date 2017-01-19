@@ -43,7 +43,7 @@ defmodule RavioliCook.Results.ServerRegistry do
     pid
   end
 
-  defp do_start_server(%{aggregation_type: "weighted_average"}) do
-    Results.WeightedAverage.start_link()
+  defp do_start_server(%{aggregation_type: "weighted_average"} = job) do
+    Results.WeightedAverage.start_link(job.required_results_count)
   end
 end
