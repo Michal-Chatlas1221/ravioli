@@ -5,6 +5,8 @@ defmodule RavioliCook.Results.ServerRegistry do
   """
   use GenServer
 
+  alias RavioliCook.Results
+
   @name :server_registry
 
   def start_link() do
@@ -35,8 +37,13 @@ defmodule RavioliCook.Results.ServerRegistry do
 
   defp start_result_server(job_id) do
     # TODO: Add supervisor for results server
-    IO.puts "starting server for #{job_id}"
-    {:ok, pid} = RavioliCook.Results.PiServer.start_link()
+    job = RavioliCook.JobFetcher.get_job(job_id)
+
+    {:ok, pid} = do_start_server(job)
     pid
+  end
+
+  defp do_start_server(%{aggregation_type: "weighted_average"}) do
+    Results.WeightedAverage.start_link()
   end
 end

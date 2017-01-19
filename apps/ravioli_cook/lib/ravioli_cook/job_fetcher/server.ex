@@ -20,6 +20,8 @@ defmodule RavioliCook.JobFetcher.Server do
   @doc "Returns the list of current jobs"
   def get_jobs(), do: GenServer.call(@name, :get_jobs)
 
+  def get_job(job_id), do: GenServer.call(@name, {:get_job, job_id})
+
   def get_task(), do: GenServer.call(@name, :get_task)
 
   def add_tasks(tasks), do: GenServer.cast(@name, {:add_tasks, tasks})
@@ -42,10 +44,16 @@ defmodule RavioliCook.JobFetcher.Server do
     {:reply, jobs, state}
   end
 
+  def handle_call({:get_job, job_id}, _from, %{jobs: jobs} = state) do
+    job = Enum.find(jobs, &(&1.id == job_id))
+    {:reply, job, state}
+  end
+
   def handle_info(:fetch_jobs, %{jobs: jobs, tasks: tasks} = state) do
+
     new_jobs_list =
-      jobs ++ @jobs_api.jobs().body
-      |> Enum.uniq_by(fn %{"id" => id} -> id end)
+      jobs ++ Enum.map(@jobs_api.jobs().body, &Job.from_map/1)
+      |> Enum.uniq_by(&(&1.id))
 
     new_jobs = new_jobs_list -- jobs
 
@@ -68,7 +76,6 @@ defmodule RavioliCook.JobFetcher.Server do
 
   defp divide_jobs_into_tasks(jobs) do
     jobs
-    |> Enum.map(&Job.from_map/1)
     |> Enum.flat_map(&JobDivider.divide_job_into_tasks(&1))
   end
 
