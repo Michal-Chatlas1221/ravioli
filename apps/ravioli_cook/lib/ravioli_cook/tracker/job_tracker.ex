@@ -3,11 +3,14 @@ defmodule RavioliCook.Tracker.JobTracker do
   alias RavioliCook.Presence
 
   def start_job(job) do
-    case Presence.track(self(), @topic, job.id, %{node: Node.self()}) do
-      {:ok, _} ->
-        :ok
-      {:error, {:already_tracked, _, _, _}} ->
-        {:error, :already_processed}
+    Presence.track(self(), @topic, job.id, %{node: Node.self()})
+
+    job_state = get_currently_processed_jobs()[job.id]
+
+    case Enum.find(job_state.metas, fn %{node: node} -> node != Node.self() end) do
+      nil -> :ok
+      other_node ->
+        {:error, :already_started}
     end
   end
 

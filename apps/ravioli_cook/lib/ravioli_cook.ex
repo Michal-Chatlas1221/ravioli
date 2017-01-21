@@ -7,11 +7,11 @@ defmodule RavioliCook do
     children = [
       supervisor(RavioliCook.Endpoint, []),
       supervisor(RavioliCook.Repo, []),
-      worker(RavioliCook.JobFetcher.Server, []),
       supervisor(RavioliCook.Presence, []),
       worker(RavioliCook.Tracker.NodeTracker, []),
       worker(RavioliCook.Results.ServerRegistry, []),
-      supervisor(Task.Supervisor, [[name: RavioliCook.TaskSupervisor]])
+      supervisor(Task.Supervisor, [[name: RavioliCook.TaskSupervisor]]),
+      worker(RavioliCook.JobFetcher.Server, [])
     ]
 
     opts = [strategy: :one_for_one, name: RavioliCook.Supervisor]
