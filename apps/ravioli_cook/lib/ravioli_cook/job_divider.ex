@@ -43,15 +43,11 @@ defmodule RavioliCook.JobDivider do
     end)
   end
 
-  defp do_divide_job_into__tasks(%Job{division_type: "pi"} = job) do
-    Enum.map(1..80, fn i ->
-      IO.inspect i
+  defp do_divide_job_into__tasks(%Job{division_type: "repeat_" <> count} = job) do
+    Enum.map(1..String.to_integer(count), fn i ->
       %{
-        "job_type" => "pi",
-        "rounds" => "1000000",
         "task_id" => i,
       }
-
     end)
   end
 
