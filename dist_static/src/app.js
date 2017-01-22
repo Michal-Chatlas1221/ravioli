@@ -1,7 +1,6 @@
-import "phoenix_html";
 import {socket, resultSocket} from "./socket";
 
-const pushTaskRequest = (results) => {
+const pushTaskRequest = (taskChannel) => {
   taskChannel.push("task_request", {})
 };
 
@@ -51,20 +50,22 @@ const embedScriptFile = (scriptSrc, callback) => {
   }
 }
 
+export default class App {
+  run() {
+    let taskChannel = socket.channel("tasks:*", {});
+    taskChannel.on("task_response", data => {
+      embedScriptFile(data.script_file, () => {
+      let results = calculate(data)
 
-let taskChannel = socket.channel("tasks:*", {});
-taskChannel.on("task_response", data => {
-  embedScriptFile(data.script_file, () => {
-    let results = calculate(data)
-
-    pushResults(data, results)
-    pushTaskRequest()
-  });
-});
-
-taskChannel.join()
-  .receive("ok", resp => {
-    console.log("Joined successfully", resp);
-    pushTaskRequest()
-  })
-  .receive("error", resp => { console.log("Unable to join", resp); });
+      pushResults(data, results)
+      pushTaskRequest(taskChannel)
+      });
+    });
+    taskChannel.join()
+    .receive("ok", resp => {
+      console.log("Joined successfully", resp);
+      pushTaskRequest(taskChannel)
+    })
+    .receive("error", resp => { console.log("Unable to join", resp); });
+  }  
+}
