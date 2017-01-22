@@ -11,12 +11,12 @@ defmodule RavioliCook.JobDivider do
 
   def divide_job_into_tasks(job) do
     job
-    |> do_divide_job_into__tasks()
+    |> do_divide()
     |> add_common_fields(job)
   end
 
 
-  defp do_divide_job_into__tasks(%Job{divide_server_url: url} = job) when is_binary(url) do
+  defp do_divide(%Job{divide_server_url: url} = job) when is_binary(url) do
     Task.Supervisor.start_child(RavioliCook.TaskSupervisor, fn ->
       tasks = JobDivider.Api.get_tasks(job)
 
@@ -26,7 +26,7 @@ defmodule RavioliCook.JobDivider do
     []
   end
 
-  defp do_divide_job_into__tasks(%Job{division_type: "list_" <> count} = job) do
+  defp do_divide(%Job{division_type: "list_" <> count} = job) do
     count = String.to_integer(count)
 
     job.input
@@ -43,7 +43,28 @@ defmodule RavioliCook.JobDivider do
     end)
   end
 
-  defp do_divide_job_into__tasks(%Job{division_type: "repeat_" <> count} = job) do
+  defp do_divide(
+    %Job{division_type: "text_" <> <<separator>> <> "_" <> count} = job
+  ) do
+
+    count = String.to_integer(count)
+    char_separator = <<separator::utf8>>
+
+    job.input
+    |> String.split(char_separator)
+    |> Enum.chunk(count)
+    |> Stream.with_index()
+    |> Enum.map(fn {task_input, index} ->
+      %{
+        "input" => Enum.join(task_input, char_separator),
+        "job_type" => "text_#{char_separator}_#{count}",
+        "job_id" => job.id,
+        "task_id" => index
+      }
+    end)
+  end
+
+  defp do_divide(%Job{division_type: "repeat_" <> count} = job) do
     Enum.map(1..String.to_integer(count), fn i ->
       %{
         "task_id" => i,
@@ -51,7 +72,7 @@ defmodule RavioliCook.JobDivider do
     end)
   end
 
-  defp do_divide_job_into__tasks(%Job{division_type: "matrix_by_rows"} = job) do
+  defp do_divide(%Job{division_type: "matrix_by_rows"} = job) do
     %{input: input, script_file: script_file} = job
 
     input
@@ -67,7 +88,7 @@ defmodule RavioliCook.JobDivider do
     end)
   end
 
-  defp do_divide_job_into__tasks(_), do: []
+  defp do_divide(_), do: []
 
   defp add_common_fields(tasks, job) do
     common_fields = %{

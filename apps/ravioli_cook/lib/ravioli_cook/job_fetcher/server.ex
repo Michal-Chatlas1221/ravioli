@@ -31,7 +31,7 @@ defmodule RavioliCook.JobFetcher.Server do
 
   # Callbacks
   def init(%{}) do
-    Process.send_after(self(), :fetch_jobs, 10_000)
+    Process.send_after(self(), :fetch_jobs, 1_000)
     {:ok, %{jobs: [], tasks: []}}
   end
 
