@@ -11,7 +11,9 @@ defmodule RavioliShop.JobView do
       script_file: file_path(job.script_file),
       divide_server_url: job.divide_server_url,
       division_type: job.division_type,
-      aggregation_type: job.aggregation_type
+      aggregation_type: job.aggregation_type,
+      replication_rate: job.replication_rate,
+      randomized_results: job.randomized_results
     }
   end
 

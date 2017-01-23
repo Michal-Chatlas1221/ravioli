@@ -10,6 +10,8 @@ defmodule RavioliShop.Job do
     field :aggregation_type, :string
     field :script_file, RavioliShop.ScriptFile.Type
     field :divide_server_url, :string
+    field :randomized_results, :boolean, default: false
+    field :replication_rate, :float
     belongs_to :user, User
 
     timestamps()
