@@ -13,4 +13,18 @@ defmodule RavioliCook.JobDividerTest do
       assert [6, 7, 8, 9, 10] = t2["input"]
     end
   end
+
+
+  describe "type: two_lists" do
+    input = [[1,2], [3,4]] |> Poison.encode!()
+    job = %Job{input: input, division_type: "two_lists"}
+
+    assert [
+      [1,3], [1,4], [2,3], [2,4],
+      [3,1], [4,1], [3,2], [4,2]
+    ] =
+      job
+      |> JobDivider.divide_job_into_tasks()
+      |> Enum.map(&(&1["input"]))
+  end
 end

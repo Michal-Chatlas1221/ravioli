@@ -36,7 +36,27 @@ defmodule RavioliCook.JobDivider do
     |> Enum.map(fn {task_input, index} ->
       %{
         "input" => task_input,
-        "job_type" => "list_#{count}",
+        "job_type" => "lists_#{count}",
+        "job_id" => job.id,
+        "task_id" => index
+      }
+    end)
+  end
+
+
+  defp do_divide(%Job{division_type: "two_lists"} = job) do
+    [first, second] = Poison.decode!(job.input)
+
+    first_combination = for x <- first, y <- second, do: [x, y]
+    second_combination = for x <- first, y <- second, do: [y, x]
+
+
+    first_combination ++ second_combination
+    |> Stream.with_index()
+    |> Enum.map(fn {task_input, index} ->
+      %{
+        "input" => task_input,
+        "job_type" => "two_lists",
         "job_id" => job.id,
         "task_id" => index
       }
@@ -97,5 +117,12 @@ defmodule RavioliCook.JobDivider do
       "task_id" =>  UUID.uuid4()
     }
     Enum.map(tasks, fn task -> Map.merge(common_fields, task) end)
+  end
+
+  def permutations([]) do
+    [[]]
+  end
+  def permutations(list) do
+    for h <- list, t <- permutations(list -- [h]), do: [h | t]
   end
 end
