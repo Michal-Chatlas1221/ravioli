@@ -23,7 +23,8 @@ defmodule Ravioli.Mixfile do
   defp deps do
     [
       {:mix_test_watch, "~> 0.2", only: :dev},
-      {:ex_doc, "~> 0.14", only: :dev}
+      {:ex_doc, "~> 0.14", only: :dev},
+      {:distillery, "~> 1.0"}
     ]
   end
 end
