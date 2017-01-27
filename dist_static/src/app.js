@@ -67,5 +67,28 @@ export default class App {
       pushTaskRequest(taskChannel)
     })
     .receive("error", resp => { console.log("Unable to join", resp); });
+  }
+
+  runForPluralTask() {
+    
+    let taskChannel = socket.channel("tasks:*", {});
+    
+    taskChannel.on("task_response", message => {
+      const results = data.map(data => {
+        let result
+        embedScriptFile(data.script_file, () => result = calculate(data))
+        return {data, result};
+      })
+
+      pushTaskRequest(taskChannel)
+      results.forEach(e => pushResults(e.data, e.result));
+    });
+
+    taskChannel.join()
+    .receive("ok", resp => {
+      console.log("Joined successfully", resp);
+      pushTaskRequest(taskChannel)
+    })
+    .receive("error", resp => { console.log("Unable to join", resp); });
   }  
 }
