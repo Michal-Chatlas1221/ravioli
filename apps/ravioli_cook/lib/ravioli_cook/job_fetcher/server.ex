@@ -36,11 +36,11 @@ defmodule RavioliCook.JobFetcher.Server do
   end
 
   def handle_call(:get_task, _from, %{tasks: []} = state) do
-    {:reply, nil, state}
+    {:reply, [], state}
   end
-  def handle_call(:get_task, _from, %{tasks: [task | rest]} = state) do
-    new_state = %{state | tasks: rest ++ [task]}
-    {:reply, task, new_state}
+  def handle_call(:get_task, _from, %{tasks: tasks} = state) do
+    batch = tasks |> Enum.take(10)
+    {:reply, batch, %{state | tasks: Enum.drop(tasks, 10) ++ batch}}
   end
 
   def handle_cast({:remove_task, task_id}, %{tasks: tasks} = state) do

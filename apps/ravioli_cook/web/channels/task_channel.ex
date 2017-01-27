@@ -9,8 +9,8 @@ defmodule RavioliCook.TaskChannel do
   def handle_in("task_request", %{}, socket) do
   	case JobFetcher.get_task() do
       nil -> nil
-      next_task ->
-        push(socket, "task_response", next_task)
+      tasks ->
+        push(socket, "task_response", %{:items => tasks})
     end
     {:noreply, socket}
   end
