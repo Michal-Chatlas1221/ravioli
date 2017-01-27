@@ -7,7 +7,8 @@ defmodule RavioliCook.Results.List do
   alias RavioliCook.JobFetcher
 
   defmodule Results do
-    defstruct results: [], tasks_ids: [], required_results_count: nil
+    defstruct results: [], tasks_ids: [], required_results_count: nil,
+      start_time: nil
   end
 
   def start_link(required_results_count) do
@@ -15,7 +16,11 @@ defmodule RavioliCook.Results.List do
   end
 
   def init(required_results_count) do
-    {:ok, %Results{required_results_count: required_results_count}}
+    start_time = :os.timestamp()
+    {:ok, %Results{
+        required_results_count: required_results_count,
+        start_time: start_time
+     }}
   end
 
   def handle_cast({:add_result, %{
@@ -31,16 +36,21 @@ defmodule RavioliCook.Results.List do
     if length(tasks_ids) == state.required_results_count do
       IO.puts "result: "
       IO.inspect new_results
+      duration = :timer.now_diff(:os.timestamp, state.start_time)
+
+      IO.puts "duration: #{inspect duration}"
+      {:stop, :normal, []}
+    else
+      JobFetcher.remove_task(task_id)
+
+      new_state = %{state |
+                    results: new_results,
+                    tasks_ids: tasks_ids
+                   }
+
+      {:noreply, new_state}
     end
 
-    JobFetcher.remove_task(task_id)
-
-    new_state = %{state |
-      results: new_results,
-      tasks_ids: tasks_ids
-    }
-
-    {:noreply, new_state}
   end
   def handle_cast({:add_result, _}, state) do
     {:noreply, state}

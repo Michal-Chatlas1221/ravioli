@@ -58,4 +58,6 @@ defmodule RavioliCook.Results.ServerRegistry do
   defp do_start_server(%{aggregation_type: "sum"} = job) do
     Results.Sum.start_link(job.required_results_count)
   end
+
+  defp do_start_server(_), do: {:ok, nil}
 end

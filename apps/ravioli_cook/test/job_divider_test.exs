@@ -27,4 +27,27 @@ defmodule RavioliCook.JobDividerTest do
       |> JobDivider.divide_job_into_tasks()
       |> Enum.map(&(&1["input"]))
   end
+
+  describe "replicate_tasks" do
+    test "rate=2.0" do
+      tasks = [1,2]
+
+      assert [_, _, _, _] =
+        JobDivider.replicate_tasks(tasks, %{replication_rate: 2.0})
+    end
+
+    test "rate=2.6" do
+      tasks = [1,2]
+
+      assert [_, _, _, _, _] =
+        JobDivider.replicate_tasks(tasks, %{replication_rate: 2.6})
+    end
+
+    test "rate=1.5" do
+      tasks = [1,2,3]
+
+      assert [_, _, _, _, _] =
+        JobDivider.replicate_tasks(tasks, %{replication_rate: 1.5})
+    end
+  end
 end

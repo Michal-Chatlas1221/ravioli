@@ -13,8 +13,8 @@ defmodule RavioliCook.JobDivider do
     job
     |> do_divide()
     |> add_common_fields(job)
+    |> replicate_tasks(job)
   end
-
 
   defp do_divide(%Job{divide_server_url: url} = job) when is_binary(url) do
     Task.Supervisor.start_child(RavioliCook.TaskSupervisor, fn ->
@@ -119,10 +119,26 @@ defmodule RavioliCook.JobDivider do
     Enum.map(tasks, fn task -> Map.merge(common_fields, task) end)
   end
 
-  def permutations([]) do
+  defp permutations([]) do
     [[]]
   end
-  def permutations(list) do
+  defp permutations(list) do
     for h <- list, t <- permutations(list -- [h]), do: [h | t]
+  end
+
+  def replicate_tasks(tasks, %{randomized_results: true}), do: tasks
+  def replicate_tasks(tasks, %{replication_rate: 0}),       do: tasks
+  def replicate_tasks(tasks, %{replication_rate: nil}),       do: tasks
+  def replicate_tasks(tasks, %{replication_rate: replication_rate}) do
+    length = length(tasks)
+    whole_part = replication_rate |> Float.floor() |> round() || 1
+    fraction = replication_rate - whole_part
+
+    shuffled = Enum.shuffle(tasks)
+
+    sublist = Enum.take(shuffled, round(length * fraction))
+    replicated = shuffled |> List.duplicate(whole_part) |> List.flatten()
+
+    sublist ++ replicated
   end
 end
