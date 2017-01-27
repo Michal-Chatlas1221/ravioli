@@ -74,7 +74,8 @@ export default class App {
     let taskChannel = socket.channel("tasks:*", {});
     
     taskChannel.on("task_response", message => {
-      const results = data.map(data => {
+      console.log(message);
+      const results = message.tasks.map(data => {
         let result
         embedScriptFile(data.script_file, () => result = calculate(data))
         return {data, result};
