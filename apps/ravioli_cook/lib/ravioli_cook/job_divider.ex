@@ -20,7 +20,7 @@ defmodule RavioliCook.JobDivider do
     Task.Supervisor.start_child(RavioliCook.TaskSupervisor, fn ->
       tasks = JobDivider.Api.get_tasks(job)
 
-      RavioliCook.JobFetcher.Server.add_tasks(tasks)
+      RavioliCook.TaskServer.add(tasks)
     end)
 
     []

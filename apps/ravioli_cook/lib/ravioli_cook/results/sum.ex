@@ -5,6 +5,7 @@ defmodule RavioliCook.Results.Sum do
   use GenServer
 
   alias RavioliCook.JobFetcher
+  alias RavioliCook.TaskServer
 
   defmodule Results do
     defstruct sum: 0, tasks_ids: [], required_results_count: nil
@@ -25,13 +26,12 @@ defmodule RavioliCook.Results.Sum do
     new_sum = state.sum + to_int(result)
     tasks_ids = Enum.uniq([task_id | state.tasks_ids])
 
-
     if length(tasks_ids) == state.required_results_count do
       IO.puts "result: "
       IO.inspect new_sum
     end
 
-    JobFetcher.remove_task(task_id)
+    TaskServer.remove(task_id)
 
     new_state = %{state |
       sum: new_sum,

@@ -5,6 +5,7 @@ defmodule RavioliCook.Results.KeyValue do
   use GenServer
 
   alias RavioliCook.JobFetcher
+  alias RavioliCook.TaskServer
 
   defmodule Results do
     defstruct results: %{}, tasks_ids: [], required_results_count: nil
@@ -39,7 +40,7 @@ defmodule RavioliCook.Results.KeyValue do
       IO.inspect state.results
     end
 
-    JobFetcher.remove_task(task_id)
+    TaskServer.remove(task_id)
 
     new_state = %{state |
       results: new_results,

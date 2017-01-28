@@ -6,6 +6,7 @@ defmodule RavioliCook.Results.WeightedAverage do
   use GenServer
 
   alias RavioliCook.JobFetcher
+  alias RavioliCook.TaskServer
 
   defmodule Results do
     defstruct numerator: 0, denominator: 0, tasks_ids: [],
@@ -29,13 +30,14 @@ defmodule RavioliCook.Results.WeightedAverage do
     denominator = state.denominator + to_int(denominator)
     tasks_ids = Enum.uniq([task_id | state.tasks_ids])
 
+    IO.puts "add result, task_id: #{task_id}, pid: #{inspect self()}"
     IO.puts length(tasks_ids)
 
     if length(tasks_ids) == state.required_results_count do
       IO.puts "current value: #{numerator / denominator}"
     end
 
-    JobFetcher.remove_task(task_id)
+    TaskServer.remove(task_id)
 
     new_state = %{state |
       numerator: numerator,
