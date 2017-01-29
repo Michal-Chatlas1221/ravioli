@@ -1,13 +1,13 @@
 defmodule RavioliCook.TaskChannel do
   use RavioliCook.Web, :channel
-  alias RavioliCook.JobFetcher
+  alias RavioliCook.TaskFetcher
 
   def join("tasks:*", _msg, socket) do
     {:ok, socket}
   end
 
   def handle_in("task_request", %{}, socket) do
-  	case JobFetcher.get_task() do
+  	case TaskFetcher.get() do
       nil -> nil
       tasks ->
         push(socket, "task_response", %{:items => tasks})

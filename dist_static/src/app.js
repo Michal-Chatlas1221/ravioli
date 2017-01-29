@@ -74,16 +74,20 @@ export default class App {
     let taskChannel = socket.channel("tasks:*", {});
     
     taskChannel.on("task_response", message => {
-      message.tasks.forEach((data, i) => {
-        let result
-        embedScriptFile(data.script_file, () => result = calculate(data))
-        pushResults(data, result);
+      if (message.items) {
+        message.items.forEach((data, i) => {
+          let result
+          embedScriptFile(data.script_file, () => result = calculate(data))
+          pushResults(data, result);
 
-        if (i === message.tasks.length - 4) {
-          pushTaskRequest(taskChannel)    
-        }
-      })
-    });
+          if (i === message.items.length - 4) {
+            pushTaskRequest(taskChannel)    
+          }
+        })
+      } else {
+        pushTaskRequest(taskChannel)
+      }
+    })
 
     taskChannel.join()
     .receive("ok", resp => {
