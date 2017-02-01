@@ -18,7 +18,6 @@ defmodule RavioliCook.TaskServer do
     {:ok, []}
   end
 
-
   def handle_call(:get, _from, []) do
     {:reply, [], []}
   end

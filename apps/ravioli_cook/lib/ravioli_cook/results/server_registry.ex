@@ -51,6 +51,10 @@ defmodule RavioliCook.Results.ServerRegistry do
     Results.KeyValue.start_link(job.required_results_count)
   end
 
+  defp do_start_server(%{aggregation_type: "key_value_sum"} = job) do
+    Results.KeyValueSum.start_link(job.required_results_count)
+  end
+
   defp do_start_server(%{aggregation_type: "list"} = job) do
     Results.List.start_link(job.required_results_count)
   end

@@ -48,7 +48,8 @@ defmodule RavioliCook.JobDivider do
     [first, second] = Poison.decode!(job.input)
 
     first_combination = for x <- first, y <- second, do: [x, y]
-    second_combination = for x <- first, y <- second, do: [y, x]
+    # second_combination = for x <- first, y <- second, do: [y, x]
+    second_combination = []
 
 
     first_combination ++ second_combination
@@ -61,6 +62,7 @@ defmodule RavioliCook.JobDivider do
         "task_id" => index
       }
     end)
+    |> IO.inspect
   end
 
   defp do_divide(
@@ -114,7 +116,8 @@ defmodule RavioliCook.JobDivider do
     common_fields = %{
       "job_id" => job.id,
       "script_file" => job.script_file,
-      "task_id" =>  UUID.uuid4()
+      "task_id" =>  UUID.uuid4(),
+      "metadata" => job.metadata
     }
     Enum.map(tasks, fn task -> Map.merge(common_fields, task) end)
   end

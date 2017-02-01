@@ -14,7 +14,8 @@ defmodule RavioliShop.JobView do
       division_type: job.division_type,
       aggregation_type: job.aggregation_type,
       replication_rate: job.replication_rate,
-      randomized_results: job.randomized_results
+      randomized_results: job.randomized_results,
+      metadata: job.metadata
     }
   end
 
