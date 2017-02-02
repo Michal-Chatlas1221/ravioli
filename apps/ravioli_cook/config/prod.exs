@@ -13,7 +13,8 @@ use Mix.Config
 # which you typically run after static files are built.
 config :ravioli_cook, RavioliCook.Endpoint,
   http: [port: {:system, "PORT"}],
-  url: [host: "example.com", port: 80],
+  url: [host: "138.68.70.103", port: 8080],
+check_origin: false,
   cache_static_manifest: "priv/static/manifest.json"
 
 # Do not print debug messages in production

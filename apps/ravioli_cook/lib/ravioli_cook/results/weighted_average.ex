@@ -10,7 +10,7 @@ defmodule RavioliCook.Results.WeightedAverage do
 
   defmodule Results do
     defstruct numerator: 0, denominator: 0, tasks_ids: [],
-              required_results_count: nil
+              required_results_count: nil, start_time: nil
   end
 
   def start_link(required_results_count) do
@@ -18,7 +18,12 @@ defmodule RavioliCook.Results.WeightedAverage do
   end
 
   def init(required_results_count) do
-    {:ok, %Results{required_results_count: required_results_count}}
+    start_time = :os.timestamp()
+    {:ok, %Results{
+        required_results_count: required_results_count,
+        start_time: start_time
+     }}
+
   end
 
   def handle_cast({:add_result, %{
@@ -30,15 +35,17 @@ defmodule RavioliCook.Results.WeightedAverage do
     denominator = state.denominator + to_int(denominator)
     tasks_ids = Enum.uniq([task_id | state.tasks_ids])
 
-    IO.puts "add result, task_id: #{task_id}, pid: #{inspect self()}"
-    IO.puts length(tasks_ids)
+    TaskServer.remove(task_id)
+    IO.puts "length: #{length(tasks_ids)}"
 
     if length(tasks_ids) == state.required_results_count do
-      IO.puts "current value: #{numerator / denominator}"
-    end
+      IO.puts "result: "
+      IO.inspect numerator / denominator
+      duration = :timer.now_diff(:os.timestamp, state.start_time)
 
-    TaskServer.remove(task_id)
-
+      IO.puts "duration: #{inspect duration}"
+      {:stop, :normal, []}
+else
     new_state = %{state |
       numerator: numerator,
       denominator: denominator,
@@ -46,6 +53,10 @@ defmodule RavioliCook.Results.WeightedAverage do
     }
 
     {:noreply, new_state}
+
+    end
+
+
   end
   def handle_cast({:add_result, _}, state) do
     {:noreply, state}

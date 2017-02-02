@@ -8,7 +8,7 @@ defmodule RavioliCook.Results.KeyValueSum do
   alias RavioliCook.TaskServer
 
   defmodule Results do
-    defstruct results: %{}, tasks_ids: [], required_results_count: nil
+    defstruct results: %{}, tasks_ids: [], required_results_count: nil, start_time: nil
   end
 
   def start_link(required_results_count) do
@@ -16,7 +16,11 @@ defmodule RavioliCook.Results.KeyValueSum do
   end
 
   def init(required_results_count) do
-    {:ok, %Results{required_results_count: required_results_count}}
+    start_time = :os.timestamp()
+    {:ok, %Results{
+        required_results_count: required_results_count,
+        start_time: start_time
+     }}
   end
 
   def handle_cast({:add_result, %{
@@ -30,14 +34,19 @@ defmodule RavioliCook.Results.KeyValueSum do
         new_results    = Map.merge(state.results, %{key => new_values})
       end)
 
+    TaskServer.remove(task_id)
+
     tasks_ids = Enum.uniq([task_id | state.tasks_ids])
+    IO.puts "length: #{length(tasks_ids)}"
 
     if length(tasks_ids) == state.required_results_count do
+      duration = :timer.now_diff(:os.timestamp, state.start_time)
       IO.puts "results"
       IO.inspect state.results
-    end
 
-    TaskServer.remove(task_id)
+      IO.puts "duration: #{inspect duration}"
+      {:stop, :normal, []}
+else
 
     new_state = %{state |
       results: new_results,
@@ -45,6 +54,7 @@ defmodule RavioliCook.Results.KeyValueSum do
     }
 
     {:noreply, new_state}
+	end
   end
 
   def handle_cast({:add_result, _}, state) do

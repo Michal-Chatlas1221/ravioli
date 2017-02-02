@@ -10,7 +10,7 @@ defmodule RavioliCook.JobFetcher.Server do
   alias RavioliCook.{JobDivider, Job, TaskServer}
 
   @name :job_fetcher
-  @interval 60_000
+  @interval 25_000
   @timeout 20_000
   @jobs_api Application.get_env(:ravioli_cook, :jobs_api, RavioliCook.JobFetcher.Api)
 
