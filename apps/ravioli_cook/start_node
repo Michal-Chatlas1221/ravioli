@@ -1,0 +1,4 @@
+#!/bin/sh
+
+PORT=$2 iex --name $1@127.0.0.1 --erl "-config sys.config" -S mix phoenix.server
+

@@ -1,5 +1,7 @@
 import {socket, resultSocket} from "./socket";
 
+let channelJoined = false;
+
 const pushTaskRequest = (taskChannel) => {
   taskChannel.push("task_request", {})
 };
@@ -21,6 +23,7 @@ const getResultChannel = (socket, task) => {
 
   channel.join()
     .receive("ok", resp => {
+      channelJoined = true;
       console.log("Joined results successfully", resp);
     })
     .receive("error", resp => { console.log("Unable to join results", resp); });
@@ -32,7 +35,7 @@ const embedScriptFile = (scriptSrc, callback) => {
   const id = "fetched-script-tag";
   let oldScriptTag = document.getElementById(id);
 
-  if (oldScriptTag && oldScriptTag.src == scriptSrc) {
+  if (oldScriptTag && oldScriptTag.src == scriptSrc && typeof calculate != "undefined") {
     callback();
   }
   else {
@@ -54,6 +57,7 @@ export default class App {
   run() {
     let taskChannel = socket.channel("tasks:*", {});
     taskChannel.on("task_response", data => {
+      console.log("task response");
       embedScriptFile(data.script_file, () => {
       let results = calculate(data)
 
@@ -70,22 +74,29 @@ export default class App {
   }
 
   runForPluralTask() {
-    
+
     let taskChannel = socket.channel("tasks:*", {});
-    
+
     taskChannel.on("task_response", message => {
-      if (message.items) {
+      if (message.items.length > 0) {
         message.items.forEach((data, i) => {
-          let result
-          embedScriptFile(data.script_file, () => result = calculate(data))
-          pushResults(data, result);
+          embedScriptFile(data.script_file, () => {
+            let result = calculate(data);
+            pushResults(data, result);
+          })
 
           if (i === message.items.length - 4) {
-            pushTaskRequest(taskChannel)    
+            setTimeout(function() {
+              console.log("timeout")
+              pushTaskRequest(taskChannel)
+            }, 1000)
           }
         })
       } else {
-        pushTaskRequest(taskChannel)
+        setTimeout(function() {
+          console.log("timeout")
+          pushTaskRequest(taskChannel)
+        }, 1000)
       }
     })
 
@@ -95,5 +106,5 @@ export default class App {
       pushTaskRequest(taskChannel)
     })
     .receive("error", resp => { console.log("Unable to join", resp); });
-  }  
+  }
 }

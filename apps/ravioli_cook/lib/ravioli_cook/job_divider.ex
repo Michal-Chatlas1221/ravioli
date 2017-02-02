@@ -45,18 +45,16 @@ defmodule RavioliCook.JobDivider do
 
 
   defp do_divide(%Job{division_type: "two_lists"} = job) do
-IO.puts "two lists"
 
     [first, second] = Poison.decode!(job.input)
 
     length = length(first) |> div(2)
-    first = Enum.take(first, length) 
+    first = Enum.take(first, length)
 
     first_combination = for x <- first, y <- second, do: [x, y]
     # second_combination = for x <- first, y <- second, do: [y, x]
     second_combination = []
 
-IO.puts "x"
 
     first_combination ++ second_combination
     |> Stream.with_index()

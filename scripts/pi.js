@@ -1,6 +1,6 @@
 function calculate(data) {
   console.log("new_pi")
-  const denominator = data["rounds"];
+  const denominator = 5000000;
   const task_id = data["task_id"];
   let numerator = 0;
   let x, y;
