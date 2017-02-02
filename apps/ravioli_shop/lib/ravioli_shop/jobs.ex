@@ -5,6 +5,7 @@ defmodule RavioliShop.Jobs do
     user |> Ecto.build_assoc(:jobs)
          |> Job.changeset(job_params)
          |> Repo.insert
+    |> IO.inspect
 
     Repo.preload(user, :jobs)
   end
