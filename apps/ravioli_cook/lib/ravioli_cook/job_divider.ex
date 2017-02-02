@@ -16,6 +16,11 @@ defmodule RavioliCook.JobDivider do
     |> replicate_tasks(job)
   end
 
+  defp do_divide(%Job{previous_job_id: "" <> _job_id}) do
+    IO.puts "skipping next job"
+    []
+  end
+
   defp do_divide(%Job{divide_server_url: url} = job) when is_binary(url) do
     Task.Supervisor.start_child(RavioliCook.TaskSupervisor, fn ->
       tasks = JobDivider.Api.get_tasks(job)

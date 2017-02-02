@@ -14,6 +14,7 @@ defmodule RavioliShop.Job do
     field :randomized_results, :boolean, default: false
     field :replication_rate, :float
     field :metadata, :string
+    field :previous_job_id, :string
     belongs_to :user, User
 
     timestamps()
@@ -21,7 +22,7 @@ defmodule RavioliShop.Job do
 
   @attrs [
     :type, :input, :user_id, :result, :divide_server_url, :division_type,
-    :aggregation_type, :script_file, :metadata
+    :aggregation_type, :script_file, :metadata, :previous_job_id
   ]
 
   def changeset(struct, params \\ %{}) do

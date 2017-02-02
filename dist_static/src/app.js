@@ -85,7 +85,7 @@ export default class App {
             pushResults(data, result);
           })
 
-          if (i === message.items.length - 4) {
+          if (i === message.items.length - 4 || i === message.items.length - 1) {
             setTimeout(function() {
               console.log("timeout")
               pushTaskRequest(taskChannel)

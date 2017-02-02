@@ -56,7 +56,7 @@ defmodule RavioliCook.Results.ServerRegistry do
   end
 
   defp do_start_server(%{aggregation_type: "list"} = job) do
-    Results.List.start_link(job.required_results_count)
+    Results.List.start_link(job.id, job.required_results_count, job.start_time)
   end
 
   defp do_start_server(%{aggregation_type: "sum"} = job) do

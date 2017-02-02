@@ -9,16 +9,18 @@ defmodule RavioliCook.Results.List do
 
   defmodule Results do
     defstruct results: [], tasks_ids: [], required_results_count: nil,
-      start_time: nil
+      start_time: nil, job_id: nil
   end
 
-  def start_link(required_results_count) do
-    GenServer.start_link(__MODULE__, required_results_count, [])
+  def start_link(job_id, required_results_count, start_time \\ nil) do
+    GenServer.start_link(__MODULE__, {job_id, required_results_count, start_time}, [])
   end
 
-  def init(required_results_count) do
-    start_time = :os.timestamp()
+  def init({job_id, required_results_count, start_time}) do
+    start_time = start_time || :os.timestamp()
+    RavioliCook.JobFetcher.Server.update_next_start_time(job_id, start_time)
     {:ok, %Results{
+        job_id: job_id,
         required_results_count: required_results_count,
         start_time: start_time
      }}
@@ -31,8 +33,6 @@ defmodule RavioliCook.Results.List do
     new_results = [result | state.results]
     tasks_ids = Enum.uniq([task_id | state.tasks_ids])
 
-    IO.puts "add result, task_id: #{task_id}, pid: #{inspect self()}"
-    IO.puts length(tasks_ids)
 
     if length(tasks_ids) == state.required_results_count do
       IO.puts "result: "
@@ -40,6 +40,9 @@ defmodule RavioliCook.Results.List do
       duration = :timer.now_diff(:os.timestamp, state.start_time)
 
       IO.puts "duration: #{inspect duration}"
+
+      start_next_job(state.job_id, new_results, state.start_time)
+
       {:stop, :normal, []}
     else
       TaskServer.remove(task_id)
@@ -55,5 +58,22 @@ defmodule RavioliCook.Results.List do
   end
   def handle_cast({:add_result, _}, state) do
     {:noreply, state}
+  end
+
+  defp start_next_job(job_id, results, start_time) do
+
+    input = results |> List.flatten() |> Poison.encode!()
+    metadata = %{previous: input}
+
+    jobs = RavioliCook.JobFetcher.get_jobs()
+    job = Enum.find(jobs, fn j -> j.previous_job_id == job_id end)
+
+    case job do
+      nil -> nil
+      %{} ->
+        job = %{job | metadata: metadata, previous_job_id: nil}
+
+        RavioliCook.JobFetcher.Server.start_job(job)
+    end
   end
 end

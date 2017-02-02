@@ -2,7 +2,8 @@ defmodule RavioliCook.Job do
   defstruct id: nil, type: nil, input: nil, result: nil,
     script_file: nil, user_id: nil, divide_server_url: nil,
     division_type: nil, aggregation_type: nil, required_results_count: nil,
-    randomized_results: false, replication_rate: 0, metadata: ""
+    randomized_results: false, replication_rate: 0, metadata: "",
+    previous_job_id: nil, start_time: nil
 
   def from_map(params) do
     %RavioliCook.Job{
@@ -17,7 +18,8 @@ defmodule RavioliCook.Job do
       aggregation_type: params["aggregation_type"],
       replication_rate: params["replication_rate"],
       randomized_results: params["randomized_results"],
-      metadata: params["metadata"]
+      metadata: params["metadata"],
+      previous_job_id: params["previous_job_id"]
     }
   end
 end

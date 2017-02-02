@@ -24,6 +24,12 @@ defmodule RavioliCook.JobFetcher.Server do
 
   def get_job(job_id), do: GenServer.call(@name, {:get_job, job_id})
 
+  def start_job(job), do: GenServer.cast(@name, {:start_job, job})
+
+  def update_next_start_time(job_id, time) do
+    GenServer.cast(@name, {:update_start_time, job_id, time})
+  end
+
   # Callbacks
   def init(%{}) do
     Process.send_after(self(), :fetch_jobs, 1_000)
@@ -37,6 +43,38 @@ defmodule RavioliCook.JobFetcher.Server do
   def handle_call({:get_job, job_id}, _from, %{jobs: jobs} = state) do
     job = Enum.find(jobs, &(&1.id == job_id))
     {:reply, job, state}
+  end
+
+  def handle_cast({:update_start_time, job_id, time}, state) do
+    job = Enum.find(state.jobs, fn j -> j.previous_job_id == job_id end)
+
+    case job do
+      nil -> {:noreply, state}
+      _ ->
+        job = %{job | start_time: time}
+        new_jobs =
+          [job | Enum.reject(state.jobs, fn j -> j.id == job_id end)]
+
+        new_state = %{state | jobs: new_jobs}
+
+        {:noreply, new_state}
+    end
+  end
+
+  def handle_cast({:start_job, job}, state) do
+
+    {[job], tasks} =
+      divide_jobs_into_tasks([job])
+
+    new_jobs =
+      [job | Enum.reject(state.jobs, fn j ->
+          j.id == job.id end)]
+
+    TaskServer.add(tasks)
+
+    new_state = %{state | jobs: new_jobs}
+
+    {:noreply, new_state}
   end
 
   def handle_info(:fetch_jobs, %{jobs: jobs} = state) do
@@ -72,7 +110,6 @@ defmodule RavioliCook.JobFetcher.Server do
 
   defp reject_processed_by_other_nodes(jobs) do
     Enum.filter(jobs, fn job ->
-      IO.inspect job
       case JobTracker.start_job(job) do
         :ok ->
           IO.puts "starting - #{job.id}"
