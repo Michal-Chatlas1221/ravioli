@@ -9,4 +9,15 @@ defmodule RavioliShop.Results do
         {:error, :not_found}
     end
   end
+
+  def add_progress(job_id, progress) do
+    case Repo.get(Job, job_id) do
+      %Job{} = job ->
+        job
+        |> Job.changeset(%{progress: progress})
+        |> Repo.update
+      nil ->
+        {:error, :not_found}
+    end
+  end
 end

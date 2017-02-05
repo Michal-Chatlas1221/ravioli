@@ -23,7 +23,6 @@ defmodule RavioliCook.Results.WeightedAverage do
         required_results_count: required_results_count,
         start_time: start_time
      }}
-
   end
 
   def handle_cast({:add_result, %{
@@ -36,24 +35,24 @@ defmodule RavioliCook.Results.WeightedAverage do
     tasks_ids = Enum.uniq([task_id | state.tasks_ids])
 
     TaskServer.remove(task_id)
-    IO.puts "length: #{length(tasks_ids)}"
+
+    IO.puts "add result, task_id: #{task_id}, pid: #{inspect self()}"
+    IO.puts length(tasks_ids)
 
     if length(tasks_ids) == state.required_results_count do
-      IO.puts "result: "
-      IO.inspect numerator / denominator
+      IO.puts "current value: #{numerator / denominator}"
       duration = :timer.now_diff(:os.timestamp, state.start_time)
 
       IO.puts "duration: #{inspect duration}"
       {:stop, :normal, []}
-else
-    new_state = %{state |
-      numerator: numerator,
-      denominator: denominator,
-      tasks_ids: tasks_ids
-    }
+    else
+      new_state = %{state |
+                    numerator: numerator,
+                    denominator: denominator,
+                    tasks_ids: tasks_ids
+                   }
 
-    {:noreply, new_state}
-
+      {:noreply, new_state}
     end
 
 

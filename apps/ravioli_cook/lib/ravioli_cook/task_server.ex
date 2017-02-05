@@ -14,6 +14,8 @@ defmodule RavioliCook.TaskServer do
   def remove(task_id), do: GenServer.cast(@name, {:remove, task_id})
   def get(), do: GenServer.call(@name, :get)
 
+  def get(id), do: GenServer.call(@name, {:get, id})
+
   def init(_) do
     {:ok, []}
   end
@@ -28,6 +30,14 @@ defmodule RavioliCook.TaskServer do
     batch = Enum.take(tasks, 25)
     GenServer.reply(from, batch)
     {:noreply, Enum.drop(tasks, 25) ++ batch}
+  end
+
+  def handle_call({:get, id}, _from, tasks) do
+    task = Enum.find(tasks, fn task ->
+      task["task_id"] == id
+    end)
+
+    {:reply, task, tasks}
   end
 
   def handle_cast({:add, new_tasks}, tasks) do

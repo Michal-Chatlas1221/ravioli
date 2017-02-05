@@ -6,6 +6,7 @@ defmodule RavioliCook.Results.List do
 
   alias RavioliCook.JobFetcher
   alias RavioliCook.TaskServer
+  alias RavioliCook.Results.Reporter
 
   defmodule Results do
     defstruct results: [], tasks_ids: [], required_results_count: nil,
@@ -33,8 +34,13 @@ defmodule RavioliCook.Results.List do
     new_results = [result | state.results]
     tasks_ids = Enum.uniq([task_id | state.tasks_ids])
 
+    received_count = length(tasks_ids)
 
-    if length(tasks_ids) == state.required_results_count do
+    job_id = TaskServer.get(task_id)["job_id"]
+    Reporter.report_progress(job_id, state.required_results_count, received_count)
+
+
+    if received_count == state.required_results_count do
       IO.puts "result: "
       IO.inspect new_results
       duration = :timer.now_diff(:os.timestamp, state.start_time)

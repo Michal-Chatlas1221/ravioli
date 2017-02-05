@@ -45,6 +45,7 @@ defmodule RavioliCook.JobFetcher.Server do
     {:reply, job, state}
   end
 
+
   def handle_cast({:update_start_time, job_id, time}, state) do
     job = Enum.find(state.jobs, fn j -> j.previous_job_id == job_id end)
 

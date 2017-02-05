@@ -12,7 +12,8 @@ defmodule RavioliCook do
       worker(RavioliCook.Results.ServerRegistry, []),
       supervisor(Task.Supervisor, [[name: RavioliCook.TaskSupervisor]]),
       worker(RavioliCook.JobFetcher.Server, []),
-      worker(RavioliCook.TaskServer, [])
+      worker(RavioliCook.TaskServer, []),
+      worker(RavioliCook.Results.Reporter, [])
     ]
 
     opts = [strategy: :one_for_one, name: RavioliCook.Supervisor]

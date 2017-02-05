@@ -47,5 +47,6 @@ defmodule RavioliShop.Router do
     get "/pending", CookController, :pending
     post "/status", CookController, :split_status
     put "/results", ResultController, :update
+    put "/progress", ResultController, :update
   end
 end
