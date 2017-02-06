@@ -21,10 +21,14 @@ defmodule RavioliCook.Results.Reporter do
     GenServer.cast(@name, {:report_results, job_id, results, duration})
   end
 
+  def handle_cast({:report_progress, job_id, received, 0}, state) do
+    {:noreply, state}
+  end
+
   def handle_cast({:report_progress, job_id, received, required}, state) do
     batch_size = div(required, 50)
 
-    if rem(received, batch_size) == 0 || received == required do
+    if batch_size < 1 || rem(received, batch_size) == 0 || received == required do
       progress = received / required
       Results.Api.send_progress(job_id, progress)
     end

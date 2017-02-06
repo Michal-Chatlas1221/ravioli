@@ -85,13 +85,15 @@ export default class App {
             pushResults(data, result);
           })
 
-          if (i === message.items.length - 4 || i === message.items.length - 1) {
+          if (i === message.items.length - 4) {
             setTimeout(function() {
               console.log("timeout")
               pushTaskRequest(taskChannel)
             }, 1000)
           }
         })
+
+        pushTaskRequest(taskChannel);
       } else {
         setTimeout(function() {
           console.log("timeout")

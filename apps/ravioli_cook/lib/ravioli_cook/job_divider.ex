@@ -17,7 +17,6 @@ defmodule RavioliCook.JobDivider do
   end
 
   defp do_divide(%Job{previous_job_id: "" <> _job_id}) do
-    IO.puts "skipping next job"
     []
   end
 
@@ -57,7 +56,6 @@ defmodule RavioliCook.JobDivider do
     first = Enum.take(first, length)
 
     first_combination = for x <- first, y <- second, do: [x, y]
-    # second_combination = for x <- first, y <- second, do: [y, x]
     second_combination = []
 
 
@@ -126,7 +124,7 @@ defmodule RavioliCook.JobDivider do
       "job_id" => job.id,
       "script_file" => job.script_file,
       "task_id" =>  UUID.uuid4(),
-      "metadata" => job.metadata
+      "metadata" => Poison.decode!(job.metadata)
     }
     Enum.map(tasks, fn task -> Map.merge(common_fields, task) end)
   end

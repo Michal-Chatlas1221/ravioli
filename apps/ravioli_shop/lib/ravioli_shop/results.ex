@@ -5,7 +5,7 @@ defmodule RavioliShop.Results do
     case Repo.get(Job, job_id) do
       %Job{} = job ->
         job
-        |> Job.changeset(%{result: result, duration: duration})
+        |> Job.changeset(%{result: result, duration: duration, progress: 1})
         |> Repo.update
       nil ->
         {:error, :not_found}

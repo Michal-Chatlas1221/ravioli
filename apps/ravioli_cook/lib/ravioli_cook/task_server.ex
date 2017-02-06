@@ -13,6 +13,7 @@ defmodule RavioliCook.TaskServer do
   @doc "Removes the task from the queue when it's finished"
   def remove(task_id), do: GenServer.cast(@name, {:remove, task_id})
   def get(), do: GenServer.call(@name, :get)
+  def finish_job(job_id), do: GenServer.cast(@name, {:finish_job, job_id})
 
   def get(id), do: GenServer.call(@name, {:get, id})
 
@@ -23,13 +24,13 @@ defmodule RavioliCook.TaskServer do
   def handle_call(:get, _from, []) do
     {:reply, [], []}
   end
-  def handle_call(:get, _from, tasks) when length(tasks) < 26 do
+  def handle_call(:get, _from, tasks) when length(tasks) < 6 do
     {:reply, tasks, tasks}
   end
   def handle_call(:get, from, tasks) do
-    batch = Enum.take(tasks, 25)
+    batch = Enum.take(tasks, 5)
     GenServer.reply(from, batch)
-    {:noreply, Enum.drop(tasks, 25) ++ batch}
+    {:noreply, Enum.drop(tasks, 5) ++ batch}
   end
 
   def handle_call({:get, id}, _from, tasks) do
@@ -46,6 +47,11 @@ defmodule RavioliCook.TaskServer do
 
   def handle_cast({:remove, task_id}, tasks) do
     new_tasks = Enum.reject(tasks, &(&1["task_id"] == task_id))
+    {:noreply, new_tasks}
+  end
+
+  def handle_cast({:finish_job, job_id}, tasks) do
+    new_tasks = Enum.reject(tasks, &(&1["job_id"] == job_id))
     {:noreply, new_tasks}
   end
 end
