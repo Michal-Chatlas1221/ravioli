@@ -19,7 +19,8 @@ defmodule RavioliShop.JobView do
       randomized_results: job.randomized_results,
       metadata: job.metadata,
       previous_job_id: job.previous_job_id,
-      progress: job.progress
+      progress: job.progress,
+      duration: job.duration
     }
   end
 

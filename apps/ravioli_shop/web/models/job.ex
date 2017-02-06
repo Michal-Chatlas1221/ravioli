@@ -18,6 +18,7 @@ defmodule RavioliShop.Job do
     field :name, :string
     field :description, :string
     field :progress, :float, default: 0.0
+    field :duration, :float
     belongs_to :user, User
 
     timestamps()
@@ -26,7 +27,7 @@ defmodule RavioliShop.Job do
   @attrs [
     :type, :input, :user_id, :result, :divide_server_url, :division_type,
     :aggregation_type, :metadata, :previous_job_id, :name,
-    :description, :progress
+    :description, :progress, :duration
   ]
 
   def changeset(struct, params \\ %{}) do

@@ -47,6 +47,8 @@ defmodule RavioliCook.Results.List do
 
       IO.puts "duration: #{inspect duration}"
 
+
+      Reporter.report_results(job_id, new_results, duration / 1000)
       start_next_job(state.job_id, new_results, state.start_time)
 
       {:stop, :normal, []}

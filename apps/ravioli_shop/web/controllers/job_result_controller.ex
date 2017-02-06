@@ -1,8 +1,8 @@
 defmodule RavioliShop.ResultController do
   use RavioliShop.Web, :controller
 
-  def update(conn, %{"job_id" => job_id, "result" => result}) do
-    RavioliShop.Results.add_result(job_id, result)
+  def update(conn, %{"job_id" => job_id, "results" => results, "duration" => duration}) do
+    RavioliShop.Results.add_result(job_id, results, duration)
 
     send_resp(conn, 200, "")
   end
