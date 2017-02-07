@@ -1,7 +1,24 @@
 import {socket, resultSocket} from "./socket";
 
 let channelJoined = false;
+let previousScriptSrc = '';
+let effectiveWorkerScript = '';
 
+const readFile = (pathOfFileToReadFrom) => {
+    var request = new XMLHttpRequest();
+    request.open("GET", pathOfFileToReadFrom, false);
+    request.send(null);
+    var returnValue = request.responseText;
+
+    return returnValue;
+}
+
+const getTextRepresentationOfWebWorkerCode = () => `
+  ;
+  self.onmessage = function(e) {
+    self.postMessage(calculate(e));
+  };
+`
 const pushTaskRequest = (taskChannel) => {
   taskChannel.push("task_request", {})
 };
@@ -31,59 +48,32 @@ const getResultChannel = (socket, task) => {
   return channel;
 }
 
-const embedScriptFile = (scriptSrc, callback) => {
-  const id = "fetched-script-tag";
-  let oldScriptTag = document.getElementById(id);
-
-  if (oldScriptTag && oldScriptTag.src == scriptSrc && typeof calculate != "undefined") {
-    callback();
+const embedScriptFile = (scriptSrc, callback, data) => {
+  if (previousScriptSrc !== scriptSrc) {
+    var blob = new Blob([readFile(scriptSrc) + getTextRepresentationOfWebWorkerCode()], {type: 'text/javascript'});
+    var workerScript = window.URL.createObjectURL(blob);
+    effectiveWorkerScript = workerScript;
+    previousScriptSrc = scriptSrc;
+    console.log('Script changed');
   }
-  else {
-    if (oldScriptTag) oldScriptTag.remove();
 
-    let scriptTag = document.createElement('script');
-    scriptTag.src = scriptSrc;
-
-    scriptTag.onload = callback;
-    scriptTag.onreadystatechange = callback;
-
-    scriptTag.id = id;
-
-    document.head.appendChild(scriptTag);
+  var worker = new Worker(effectiveWorkerScript);
+  worker.onmessage = function(e) {
+    callback(e)
   }
+  worker.postMessage(data);
 }
 
 export default class App {
-  run() {
-    let taskChannel = socket.channel("tasks:*", {});
-    taskChannel.on("task_response", data => {
-      console.log("task response");
-      embedScriptFile(data.script_file, () => {
-      let results = calculate(data)
-
-      pushResults(data, results)
-      pushTaskRequest(taskChannel)
-      });
-    });
-    taskChannel.join()
-    .receive("ok", resp => {
-      console.log("Joined successfully", resp);
-      pushTaskRequest(taskChannel)
-    })
-    .receive("error", resp => { console.log("Unable to join", resp); });
-  }
-
   runForPluralTask() {
-
     let taskChannel = socket.channel("tasks:*", {});
 
     taskChannel.on("task_response", message => {
       if (message.items.length > 0) {
         message.items.forEach((data, i) => {
-          embedScriptFile(data.script_file, () => {
-            let result = calculate(data);
-            pushResults(data, result);
-          })
+          embedScriptFile(data.script_file, (result) => {
+            pushResults(data, result.data);
+          }, data)
 
           if (i === message.items.length - 4) {
             setTimeout(function() {
