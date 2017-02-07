@@ -31,6 +31,7 @@
     "babel-preset-stage-2": "^6.18.0",
     "espower": "^2.0.1",
     "isomorphic-fetch": "^2.2.1",
-    "transform-runtime": "0.0.0"
+    "transform-runtime": "0.0.0",
+    "turbolinks": "^5.0.0"
   }
 }
