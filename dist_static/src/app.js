@@ -16,7 +16,8 @@ const readFile = (pathOfFileToReadFrom) => {
 const getTextRepresentationOfWebWorkerCode = () => `
   ;
   self.onmessage = function(e) {
-    self.postMessage(calculate(e));
+    self.postMessage(calculate(e.data));
+    self.close();
   };
 `
 const pushTaskRequest = (taskChannel) => {
@@ -82,8 +83,6 @@ export default class App {
             }, 1000)
           }
         })
-
-        pushTaskRequest(taskChannel);
       } else {
         setTimeout(function() {
           console.log("timeout")
